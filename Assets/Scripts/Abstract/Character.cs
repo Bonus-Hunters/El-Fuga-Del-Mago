@@ -19,12 +19,11 @@ namespace Assets.Scripts.Abstract
         [SerializeField] protected float jumpForce = 2f;
         [SerializeField] protected float RaycastDown = 0.99f;
 
-        [Header("Crouch")]
+        [Header("Crouch Settings")]
         [SerializeField] protected float crouchTransSpeed = 6f;
         [SerializeField] protected float crouchSpeed = 2f;
         [SerializeField] protected float crouchHeight = 1.2f;
         [SerializeField] protected float standHeight = 2f;
-        private Vector3 originalCenter;
 
         protected CharacterController controller;
         protected Vector3 velocity;
@@ -38,7 +37,6 @@ namespace Assets.Scripts.Abstract
         protected virtual void Awake()
         {
             controller = GetComponent<CharacterController>();
-            originalCenter = controller.center;
         }
 
         protected virtual void Update()
@@ -86,7 +84,6 @@ namespace Assets.Scripts.Abstract
             float targetHeight = isCrouching ? crouchHeight : standHeight;
             float previousHeight = controller.height;
 
-            // Smoothly adjust height
             controller.height = Mathf.MoveTowards(controller.height, targetHeight, crouchTransSpeed * Time.deltaTime);
             float heightDiff = controller.height - previousHeight;
             controller.center -= new Vector3(0, heightDiff / 2, 0);

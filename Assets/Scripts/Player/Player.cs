@@ -42,6 +42,5 @@ namespace Assets.Scripts.Player
             cameraPitch = Mathf.Clamp(cameraPitch, -80f, 80f);
             playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
         }
-
     }
 }
