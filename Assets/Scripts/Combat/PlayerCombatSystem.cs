@@ -11,10 +11,15 @@ namespace Assets.Scripts.Combat
     internal class PlayerCombatSystem : MonoBehaviour
     {
         public MeleeWeapon weapon;
+        public MeleeHitbox hitbox;
 
+        void Start()
+        {
+                hitbox = gameObject.AddComponent<MeleeHitbox>();
+                hitbox.Setup(weapon);
+        }
 
-
-        private void Update()
+        void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
