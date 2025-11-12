@@ -10,20 +10,22 @@ namespace Assets.Scripts.Combat
 {
     internal class PlayerCombatSystem : MonoBehaviour
     {
-        public MeleeWeapon weapon;
-        public MeleeHitbox hitbox;
+        public Weapon equippedWeapon;
+        public Transform attackOrigin;
 
         void Start()
         {
-                hitbox = gameObject.AddComponent<MeleeHitbox>();
-                hitbox.Setup(weapon);
+            if (equippedWeapon != null)
+                equippedWeapon.attackOrigin = attackOrigin;
         }
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && equippedWeapon != null)
             {
-                weapon.Attack();
+                Debug.Log("Player attacking with " + equippedWeapon.name);
+                equippedWeapon.Attack();
+                Debug.Log("Attack finished.");
             }
         }
     }

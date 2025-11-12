@@ -16,9 +16,12 @@ namespace Assets.Scripts.Player
         [SerializeField] private float mouseSensitivity = 2f;
 
         protected override void Update()
-        {
+        {   
             base.Update();
             HandleInput();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         private void HandleInput()
         {

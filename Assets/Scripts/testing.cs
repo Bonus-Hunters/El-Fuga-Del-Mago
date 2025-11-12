@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Player.Inventory;
+﻿using Assets.Scripts.Interfaces;
+using Assets.Scripts.Player.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +9,24 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    internal class testing : MonoBehaviour
+    internal class testing : MonoBehaviour, IAttackable
     {
-        void Start()
+        public float health = 50f;
+
+        public void TakeDamage(float damage)
         {
-            // Create a ScriptableObject instance in code (for testing)
-            EquippableItem swordData = ScriptableObject.CreateInstance<EquippableItem>();
-            swordData.name = "Test Sword";
+            health -= damage;
+            Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {health}");
 
-            // Create a MeleeWeapon instance using the ScriptableObject
-            MeleeWeapon sword = new MeleeWeapon(swordData);
-
-            // Set some runtime values
-            sword.attackTime = 0f;
-            sword.damage = 10f;
-            sword.range = 2f;
-            sword.attackSpeed = 1.5f;
-            sword.attackTime = 0f;
-            sword.cooldownTime = 1f;
-
-            // Test: Print info
-            Debug.Log("Weapon Name: " + sword.DataItem.name);
-            Debug.Log("Weapon Damage: " + sword.damage);
-            Debug.Log("Weapon Range: " + sword.range);
-
-            // Call attack
-            sword.Attack();
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+        private void Die()
+        {
+            Debug.Log($"{gameObject.name} has been destroyed!");
+            Destroy(gameObject);
         }
     }
 }
