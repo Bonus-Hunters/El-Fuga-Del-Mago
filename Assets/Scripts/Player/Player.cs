@@ -1,7 +1,9 @@
 ﻿using Assets.Scripts.Abstract;
+using Assets.Scripts.Combat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -14,6 +16,13 @@ namespace Assets.Scripts.Player
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float cameraPitch = 0f;
         [SerializeField] private float mouseSensitivity = 2f;
+
+        private PlayerCombatSystem playerCombatSystem;
+
+        protected void Start()
+        {
+            playerCombatSystem = GetComponent<PlayerCombatSystem>();
+        }
 
         protected override void Update()
         {   
@@ -35,6 +44,8 @@ namespace Assets.Scripts.Player
 
             if (Input.GetButtonDown("Jump"))
                 Jump();
+            if(Input.GetKeyDown(KeyCode.Q))
+                playerCombatSystem.DropWeapon();
         }
         public override void Rotate(float mouseX, float mouseY)
         {

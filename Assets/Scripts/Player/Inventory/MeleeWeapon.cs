@@ -33,6 +33,8 @@ namespace Assets.Scripts.Player.Inventory
                 return;
             }
 
+            Debug.DrawRay(attackOrigin.position, attackOrigin.forward * range, Color.red, 0.5f);
+
             if (Physics.Raycast(attackOrigin.position, attackOrigin.forward, out RaycastHit hit, range, hitLayers))
             {
                 Debug.Log($"Hit {hit.collider.name} for {damage} damage!");
