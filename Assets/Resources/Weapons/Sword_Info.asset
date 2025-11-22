@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93c18be8908aab64b8e263b4b60b976b, type: 3}
-  m_Name: NewEquippableItem
+  m_Name: Sword_Info
   m_EditorClassIdentifier: 
-  itemName: Sword Item
+  itemName: Sword
   description: 
   icon: {fileID: 0}
   maxStack: 1
-  prefab: {fileID: 919132149155446097, guid: 96cd46caeb8ee304e8da0cb7e63d0ab5, type: 3}
+  prefab: {fileID: 9189355864843252978, guid: 4cf76eadc24e70b4cab5c85e6c06ec1e, type: 3}
   equipSlot: {fileID: 0}

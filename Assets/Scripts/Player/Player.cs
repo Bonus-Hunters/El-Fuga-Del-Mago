@@ -22,15 +22,14 @@ namespace Assets.Scripts.Player
         protected void Start()
         {
             playerCombatSystem = GetComponent<PlayerCombatSystem>();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         protected override void Update()
         {   
             base.Update();
             HandleInput();
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
         private void HandleInput()
         {
