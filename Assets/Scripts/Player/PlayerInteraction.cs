@@ -44,7 +44,7 @@ namespace Assets.Scripts.Player
                 currentInteractable = hit.collider.GetComponent<IInteractable>();
                 if (currentInteractable != null)
                 {
-                    Debug.Log("Looking at interactable: " + hit.collider.name);
+                    //Debug.Log("Looking at interactable: " + hit.collider.name);
                     interactionText.text = currentInteractable.InterationPrompt();
                     interactionText.enabled = true;
                 }
