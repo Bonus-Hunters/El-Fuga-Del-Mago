@@ -5,7 +5,7 @@ using UnityEngine.XR;
 
 public class playerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 3f;
     private CharacterController controller;
 
     void Start()
@@ -20,13 +20,6 @@ public class playerMovement : MonoBehaviour
 
         Vector3 move = new Vector3(horizontal, 0, vertical);
         controller.Move(move.normalized * speed * Time.deltaTime);
-    }
-    void OnControllerColliderHit(ControllerColliderHit other)
-    {
-        if (other.collider.tag == "Bull-Boss")
-        {
-            print("collided with boss");
-        }
     }
 
 }
