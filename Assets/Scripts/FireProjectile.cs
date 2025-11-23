@@ -1,68 +1,57 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FireProjectile : MonoBehaviour
 {
     private Vector3 target;
-    private float speed = 5f;
-    private bool initialized = false;
+    private float speed;
+    private bool hasTarget = false;
 
-    [Header("Lifecycle")]
-    public float arrivalThreshold = 0.05f;  // how close to consider 'arrived'
-    public float stayDuration = 1.0f;       // seconds to stay at target before destroy
-    public bool faceMovementDirection = false;
+    public float arrivalThreshold = 0.05f;
+    public float stayDuration = 1f;
 
-    // Call this immediately after Instantiate
-    public void SetTarget(Vector3 targetPosition, float moveSpeed)
+    private Vector3 velocity = Vector3.zero;
+    public float smoothTime = 0.15f; // controls how smooth the movement is
+
+    // -------------------------
+    // PUBLIC, GENERIC API
+    // -------------------------
+    public void Initialize(Vector3 targetPosition, float moveSpeed)
     {
         target = targetPosition;
         speed = moveSpeed;
-        initialized = true;
+        hasTarget = true;
     }
 
     void Update()
     {
-        if (!initialized)
-            return; // wait until boss sets target
+        if (!hasTarget) return;
 
-        // Move toward target on every frame
-        Vector3 dir = target - transform.position;
-        // Keep y fixed if you want it to stay on same height
-        dir.y = 0f;
-
-        if (dir.magnitude <= arrivalThreshold)
-        {
-            // Arrived: start the arrival coroutine and disable further movement
-            initialized = false;
-            StartCoroutine(OnArrivalAndDestroy());
-            return;
-        }
-
-        Vector3 move = dir.normalized * speed * Time.deltaTime;
-        // Avoid overshoot
-        if (move.magnitude > dir.magnitude) move = dir;
-        transform.position = Vector3.Lerp(
+        // Smooth movement
+        transform.position = Vector3.SmoothDamp(
             transform.position,
             target,
-            speed * Time.deltaTime
-            );
+            ref velocity,
+            smoothTime,
+            Mathf.Infinity,
+            Time.deltaTime
+        );
 
-        if (faceMovementDirection && move != Vector3.zero)
-            transform.forward = move.normalized;
+        // Check arrival
+        if (Vector3.Distance(transform.position, target) <= arrivalThreshold)
+        {
+            hasTarget = false;
+            StartCoroutine(HandleArrival());
+        }
     }
 
-    IEnumerator OnArrivalAndDestroy()
+    IEnumerator HandleArrival()
     {
-        // Snap exactly to target (preserve y of transform or set to target.y)
-        transform.position = new Vector3(target.x, transform.position.y, target.z);
+        // Snap to exact position
+        transform.position = target;
 
-        // Optional: play particle/effect or change color here
-        // e.g. GetComponent<Renderer>().material.color = Color.yellow;
-
+        // Wait then destroy
         yield return new WaitForSeconds(stayDuration);
-
-        // destory object after stayDuration time ends 
         Destroy(gameObject);
     }
 }

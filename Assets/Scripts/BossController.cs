@@ -1,98 +1,75 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    [Header("Spawning")]
-    public GameObject firePrefab;           // assign FirePrefab here
-    public Transform projectilesParent;     // optional parent for instantiated projectiles
-    public float spawnInterval = 1.0f;      // seconds between spawns
-    public int maxSimultaneous = 5;         // how many can exist at once
+    [Header("References")]
+    public GameObject projectilePrefab;
+    public Transform projectilesParent;
+    public Transform player;
 
-    [Header("Targeting")]
-    public float spawnRadius = 5f;          // radius around boss where fires land
-    public float projectileSpeed = 4f;      // movement speed of fire
+    [Header("Projectile Settings")]
+    public float spawnRadius = 10f;
+    public float spawnInterval = 1f;
+    public float projectileSpeed = 4f;
+    public int maxSimultaneous = 5;
 
     [Header("Player Detection")]
-    public Transform player;         // assign the Player cube here
-    public float detectionRange = 10f;   // boss activates when player is inside this range
-
+    public float detectionRange = 12f;
 
     void Start()
     {
-        if (firePrefab == null)
-        {
-            Debug.LogError("Fire prefab is not assigned on BossController.");
-            enabled = false;
-            return;
-        }
-        StartCoroutine(SpawnRoutine());
+        StartCoroutine(Spawner());
     }
 
-    IEnumerator SpawnRoutine()
+    IEnumerator Spawner()
     {
         while (true)
         {
-            // 1) Check distance to player
+            // Only attack if player is close
             if (player != null)
             {
                 float dist = Vector3.Distance(transform.position, player.position);
-
-                // If player is OUTSIDE range → do nothing this frame
-                if (dist > detectionRange)
+                if (dist <= detectionRange)
                 {
-                    yield return null;
-                    continue;
+                    TrySpawnProjectile();
                 }
-            }
-
-            // 2) Only spawn if player is in range
-            if (maxSimultaneous <= 0 || CountProjectiles() < maxSimultaneous)
-            {
-                SpawnFire();
             }
 
             yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    int CountProjectiles()
+    void TrySpawnProjectile()
     {
-        if (projectilesParent != null)
-            return projectilesParent.childCount;
-        // fallback: count all objects with tag "Projectile" if you set tag
-        return 0;
-    }
+        if (maxSimultaneous > 0 && projectilesParent.childCount >= maxSimultaneous)
+            return;
 
-    void SpawnFire()
-    {
-        // 1) Calculate a random target position on XZ plane around boss
+        // Pick random point around boss
         Vector2 rand = Random.insideUnitCircle * spawnRadius;
-        Vector3 target = new Vector3(transform.position.x + spawnRadius, transform.position.y, transform.position.z + rand.y);
 
-        // 2) Instantiate fire at boss position
-        // spawn position for the fire obj
-        Vector3 spawnPos = transform.position + new Vector3(0, -1.0f, 0); ;
-        GameObject go = Instantiate(firePrefab, spawnPos, Quaternion.identity, projectilesParent);
+        Vector3 target = new Vector3(
+            transform.position.x + rand.x,
+            transform.position.y,
+            transform.position.z + rand.y
+        );
 
-        // 3) Configure the projectile (pass target and speed)
-        FireProjectile fp = go.GetComponent<FireProjectile>();
-        if (fp != null)
-        {
-            fp.SetTarget(target, projectileSpeed);
-        }
-        else
-        {
-            // If the prefab doesn't have the script, move it manually
-            go.transform.position = Vector3.MoveTowards(spawnPos, target, 0.01f);
-        }
+        // Spawn projectile
+        GameObject go = Instantiate(projectilePrefab, transform.position, Quaternion.identity, projectilesParent);
+
+        // Use the generic Initialize method
+        FireProjectile proj = go.GetComponent<FireProjectile>();
+        proj.Initialize(target, projectileSpeed);
     }
 
-    // Visualize spawn radius in editor
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
+        // Projectile radius
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, spawnRadius);
+
+        // Player detection range
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 }
