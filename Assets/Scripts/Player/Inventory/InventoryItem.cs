@@ -10,4 +10,5 @@ public class InventoryItem : ScriptableObject
     [TextArea] public string description;
     public Sprite icon;
     public int maxStack = 1;
+    public int ID;
 }
