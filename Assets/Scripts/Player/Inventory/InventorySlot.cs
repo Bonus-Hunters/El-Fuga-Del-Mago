@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,10 +23,10 @@ public class InventorySlot
         this.itemData = null;
         this.stackSize = 0;
     }
-    public void UpdateInventorySlot( InventoryItem data , int amout)
+    public void UpdateInventorySlot( InventoryItem data , int amount)
     {
         itemData = data;
-        stackSize = amout;
+        stackSize = amount;
     }
     public bool RoomLeftInStack(int amountToAdd,out int amountRemaining)
     {
@@ -47,5 +48,32 @@ public class InventorySlot
     public void RemoveFromStack(int amount)
     {
         stackSize -= amount;
+    }
+
+    public void AssignItem(InventorySlot invSlot)
+    {
+        if (itemData == invSlot.ItemData)
+        {
+            AddToStack(invSlot.stackSize);
+        }
+        else
+        {
+            itemData = invSlot.itemData;
+            stackSize = 0;
+            AddToStack(invSlot.stackSize);
+        }
+    }
+
+    public bool SplitStack(out InventorySlot splitStack)
+    {
+        if (stackSize <= 1)
+        {
+            splitStack = null;
+            return false;
+        }
+        int halfStack= Mathf.RoundToInt(stackSize/2);
+        RemoveFromStack(halfStack);
+        splitStack = new InventorySlot(itemData,halfStack);
+        return true;
     }
 }
