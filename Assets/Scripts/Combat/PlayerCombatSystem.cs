@@ -45,8 +45,9 @@ namespace Assets.Scripts.Combat
             {
                 Debug.Log("Spawning weapon prefab for: " + newWeapon.DataItem.name);
                 weaponObjectInstance = Instantiate(newWeapon.DataItem.prefab, WeaponSlot);
-                weaponObjectInstance.transform.localPosition = Vector3.zero;
-                //weaponObjectInstance.transform.localRotation = Quaternion.identity;
+                weaponObjectInstance.transform.localPosition = newWeapon.DataItem.equipPositionOffset;
+                weaponObjectInstance.transform.localEulerAngles = newWeapon.DataItem.equipRotationOffset;
+
 
                 // Disable Rigidbody if it exists
                 Rigidbody rb = weaponObjectInstance.GetComponent<Rigidbody>();

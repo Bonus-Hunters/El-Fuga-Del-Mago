@@ -13,5 +13,9 @@ namespace Assets.Scripts.Player.Inventory
         [Header("Equip Settings")]
         public GameObject prefab;          // Prefab for the weapon (FPS hands/gun)
         public Transform equipSlot;        // Where to attach prefab
+
+        [Header("Equip Offsets")]
+        [SerializeField] public Vector3 equipPositionOffset;
+        [SerializeField] public Vector3 equipRotationOffset;
     }
 }

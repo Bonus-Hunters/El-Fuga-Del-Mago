@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93c18be8908aab64b8e263b4b60b976b, type: 3}
-  m_Name: Mo_Sword_Info
+  m_Name: Seny_Sword_Info
   m_EditorClassIdentifier: 
-  itemName: Mo_Sword
+  itemName: Seny Sword
   description: 
   icon: {fileID: 0}
   maxStack: 1
   ID: 0
-  prefab: {fileID: 1092176532228195505, guid: 9e72578025ec9e9489dbbf5ae3dc9aea, type: 3}
+  prefab: {fileID: 2405575779041321162, guid: ba22bcc0ffed22644962bcac2306c96b, type: 3}
   equipSlot: {fileID: 0}
   equipPositionOffset: {x: 0, y: 0, z: 0}
-  equipRotationOffset: {x: 0, y: 103, z: 0}
+  equipRotationOffset: {x: 0, y: 100, z: 0}
