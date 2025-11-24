@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using Assets.Scripts.Interfaces;
+using UnityEditor.UI;
 using UnityEngine;
+using Assets.Scripts;
 
 public class SkeletonController : MonoBehaviour
 {
@@ -40,6 +42,7 @@ public class SkeletonController : MonoBehaviour
     {
         if (player != null)
         {
+
             dist = Vector3.Distance(transform.position, player.position);
             // start attacking player
             if (dist <= detectionRange)

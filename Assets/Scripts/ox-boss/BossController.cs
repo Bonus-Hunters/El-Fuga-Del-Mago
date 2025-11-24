@@ -19,6 +19,8 @@ public class BossController : MonoBehaviour
 
     [Header("Player Detection")]
     public float detectionRange = 12f;
+    [SerializeField] float damageAmount = 10f;
+
 
     void Start()
     {
@@ -63,6 +65,15 @@ public class BossController : MonoBehaviour
         // Use the generic Initialize method
         FireProjectile proj = go.GetComponent<FireProjectile>();
         proj.Initialize(target, projectileSpeed);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Player Collided with Enemy");
+
+        IAttackable dmg = other.GetComponent<IAttackable>();
+        // if projet hit an attackabale object -> [player]
+        if (dmg != null)
+            dmg.TakeDamage(damageAmount);
     }
 
     private void OnDrawGizmosSelected()

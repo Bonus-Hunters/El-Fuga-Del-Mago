@@ -13,7 +13,6 @@ public class WayPointFollower : MonoBehaviour
     public bool hasFinishedPath = false;
     public bool isWalking = true;                // whether movement is allowed
     bool wasMovingLastFrame = false;      // to detect "stop"
-    float stopThreshold = 0.0001f;        // speed threshold
     Vector3 lastPos;                      // to detect movement
 
     void Start()
@@ -27,7 +26,7 @@ public class WayPointFollower : MonoBehaviour
             return;
 
         float fixedY = transform.position.y;
-
+        Debug.Log("Enemy Moving");
         // Get next waypoint
         Vector3 target = wayPoints[currentWayPointIndex].transform.position;
         target.y = fixedY;

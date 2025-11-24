@@ -6,31 +6,34 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] Transform player;
     NavMeshAgent agent;
-    private bool isPlayerInSafeZone = false;
+    WayPointFollower wayPoint;
+    private bool isPlayerInAttackZone = false;
+
 
     void Start()
     {
+        wayPoint = GetComponent<WayPointFollower>();
         agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
     {
-        if (!isPlayerInSafeZone)
+        if (isPlayerInAttackZone)
         {
             // Chase the player
-            GetComponent<WayPointFollower>().enabled = false;
+            wayPoint.StopWalking();
             agent.SetDestination(player.position);
         }
-        else if (isPlayerInSafeZone)
+        else
         {
             // Stop chasing and return to patrol
             agent.ResetPath();
-            GetComponent<WayPointFollower>().enabled = true;
+            wayPoint.ResumeWalking();
         }
     }
 
     public void NotifyPlayerInZone(bool inZone)
     {
-        isPlayerInSafeZone = inZone;
+        isPlayerInAttackZone = inZone;
     }
 }
