@@ -20,6 +20,7 @@ namespace Assets.Scripts.Player
 
         private IInteractable currentInteractable;
 
+        public bool IsInteracting { get; private set; }
         private void Start()
         {
             interactionText.enabled = false;
@@ -67,7 +68,12 @@ namespace Assets.Scripts.Player
             if (Input.GetKeyDown(KeyCode.E))
             {
                 currentInteractable.Interact(gameObject);
+                IsInteracting = true;
             }
+        }
+        private void EndInteraction()
+        {
+            IsInteracting = false;
         }
     }
 }

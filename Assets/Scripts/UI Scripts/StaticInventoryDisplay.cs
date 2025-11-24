@@ -15,9 +15,9 @@ public class StaticInventoryDisplay : InventoryDisplay
             inventorySystem.onInventorySlotChanged += UpdateSlot;
         }
         else Debug.LogWarning($"No inventory assigned to {this.gameObject}");
-        AssignSlot(inventorySystem);
+        AssignSlots(inventorySystem);
     }
-    public override void AssignSlot(InventorySystem invToDisplay)
+    public override void AssignSlots(InventorySystem invToDisplay)
     {
         slotDictionary = new Dictionary<InventorySlot_UI, InventorySlot>();
         if (slots.Length != inventorySystem.InventorySize) Debug.Log($"inventory slots out of sync on {this.gameObject}");
