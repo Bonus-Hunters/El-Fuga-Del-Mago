@@ -1,5 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Assets.Scripts.Abstract;
+using Assets.Scripts.Combat;
+using Assets.Scripts.Interfaces;
 
 public class BossController : MonoBehaviour
 {

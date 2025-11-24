@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Interfaces;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class playerMovement : MonoBehaviour
+public class playerMovement : MonoBehaviour, IAttackable
 {
     public float speed = 3f;
     private CharacterController controller;
@@ -11,6 +12,11 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+    }
+
+    void IAttackable.TakeDamage(float damage)
+    {
+        Debug.Log("Player Got hit!");
     }
 
     void Update()
