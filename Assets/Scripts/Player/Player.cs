@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Abstract;
 using Assets.Scripts.Combat;
+using Assets.Scripts.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class Player : Character
+    public class Player : Character, IAttackable
     {
         [Header("Camera")]
         [SerializeField] private Transform playerCamera;
@@ -27,7 +28,7 @@ namespace Assets.Scripts.Player
         }
 
         protected override void Update()
-        {   
+        {
             base.Update();
             HandleInput();
         }
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Player
 
             if (Input.GetButtonDown("Jump"))
                 Jump();
-            if(Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
                 playerCombatSystem.DropWeapon();
         }
         public override void Rotate(float mouseX, float mouseY)
@@ -54,6 +55,12 @@ namespace Assets.Scripts.Player
             cameraPitch -= mouseY * mouseSensitivity;
             cameraPitch = Mathf.Clamp(cameraPitch, -80f, 80f);
             playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
+        }
+
+        void IAttackable.TakeDamage(float damage)
+        {
+            // adjust health reduction and death conditions 
+            Debug.Log("Player Got Hit!");
         }
     }
 }

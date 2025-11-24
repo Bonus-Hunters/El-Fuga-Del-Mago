@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Weapon
   - NPC
+  - Bull-Boss
   layers:
   - Default
   - TransparentFX
