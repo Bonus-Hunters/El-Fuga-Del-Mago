@@ -16,7 +16,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float cameraPitch = 0f;
         [SerializeField] private float mouseSensitivity = 2f;
-
+        public bool IsInUI = false;
         private PlayerCombatSystem playerCombatSystem;
 
         protected void Start()
@@ -29,7 +29,21 @@ namespace Assets.Scripts.Player
         protected override void Update()
         {   
             base.Update();
-            HandleInput();
+            // If UI is open, do not process gameplay input
+            if (!IsInUI)
+                HandleInput();
+
+            // Cursor control depending on UI state
+            if (IsInUI)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
         private void HandleInput()
         {
@@ -48,6 +62,7 @@ namespace Assets.Scripts.Player
         }
         public override void Rotate(float mouseX, float mouseY)
         {
+            if (IsInUI) return;
             base.Rotate(mouseX, mouseY);
 
             // vertical look (pitch)

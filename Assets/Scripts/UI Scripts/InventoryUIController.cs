@@ -1,3 +1,4 @@
+using Assets.Scripts.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using UnityEngine.InputSystem;
 public class InventoryUIController : MonoBehaviour
 {
     public DynamicInventoryDisplay inventoryPanel;
+    [SerializeField] private Player player;
     private void Awake()
     {
         inventoryPanel.gameObject.SetActive(false);
@@ -23,16 +25,16 @@ public class InventoryUIController : MonoBehaviour
     {
         inventoryPanel.gameObject.SetActive(true);
         inventoryPanel.RefreshDynamicInventory(invToDisplay);
+        player.IsInUI = true;
     }
 
     void Update()
     {
         if(inventoryPanel.gameObject.activeInHierarchy &&
-            Keyboard.current.escapeKey.wasPressedThisFrame)
+            Keyboard.current.qKey.wasPressedThisFrame)
         {
             inventoryPanel.gameObject.SetActive(false);
-            //UIStateController.Instance.ExitUI();
-            
+            player.IsInUI = false;
         }
     }
 }
