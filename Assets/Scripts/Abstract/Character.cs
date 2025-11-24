@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,8 +10,12 @@ using UnityEngine;
 namespace Assets.Scripts.Abstract
 {
     [RequireComponent(typeof(CharacterController))]
-    public abstract class Character : MonoBehaviour, IMovable
+    public abstract class Character : MonoBehaviour, IMovable, IAttackable
     {
+        [Header("Health Settings")]
+        [SerializeField] protected float maxHealth = 100f;
+        [SerializeField] protected float Mana = 100f;
+
         [Header("Movement Settings")]
         [SerializeField] protected float moveSpeed = 5f;
         [SerializeField] protected float runningSpeed = 6.9f;
@@ -87,6 +92,16 @@ namespace Assets.Scripts.Abstract
             controller.height = Mathf.MoveTowards(controller.height, targetHeight, crouchTransSpeed * Time.deltaTime);
             float heightDiff = controller.height - previousHeight;
             controller.center -= new Vector3(0, heightDiff / 2, 0);
+        }
+
+        public void TakeDamage(float damage)
+        {
+            maxHealth -= damage;
+            if (maxHealth <= 0)
+            {
+                //Die();
+                Debug.Log("Player has died.");
+            }
         }
     }
 }
