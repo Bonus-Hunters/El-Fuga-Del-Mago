@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39c30662d0cc044ca70f8c091d2fc8a, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
-  DataItem: {fileID: 11400000, guid: a460c4278c4318547bfd68358f704f09, type: 2}
+  DataItem: {fileID: 11400000, guid: 0756a91e622aa6d499d96b5bf0877191, type: 2}
   range: 3
   damage: 3
   attackSpeed: 2

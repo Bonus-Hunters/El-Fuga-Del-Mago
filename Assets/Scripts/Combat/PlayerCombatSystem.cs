@@ -46,6 +46,14 @@ namespace Assets.Scripts.Combat
                 weaponObjectInstance = Instantiate(newWeapon.DataItem.prefab, WeaponSlot);
                 weaponObjectInstance.transform.localPosition = Vector3.zero;
                 weaponObjectInstance.transform.localRotation = Quaternion.identity;
+
+                // Disable Rigidbody if it exists
+                Rigidbody rb = weaponObjectInstance.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.isKinematic = true;
+                    rb.useGravity = false;
+                }
             }
 
             Debug.Log("Equipped weapon: " + newWeapon.DataItem.name);
