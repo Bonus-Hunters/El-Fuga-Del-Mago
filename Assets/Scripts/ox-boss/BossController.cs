@@ -6,10 +6,16 @@ using Assets.Scripts.Interfaces;
 
 public class BossController : MonoBehaviour
 {
+
+    private float intervalAttack = 5.0f;
+    private float dist;
+    private float timer = 5.0f;
     [Header("References")]
     public GameObject projectilePrefab;
     public Transform projectilesParent;
     public Transform player;
+    public EnemyMovement movement;
+    public Animator animator;
 
     [Header("Projectile Settings")]
     public float spawnRadius = 10f;
@@ -18,14 +24,36 @@ public class BossController : MonoBehaviour
     public int maxSimultaneous = 5;
 
     [Header("Player Detection")]
-    public float detectionRange = 12f;
+    public float detectionRange = 6f;
     [SerializeField] float damageAmount = 10f;
+
+    bool isAttacking = false, isDead = false;
 
 
     void Start()
     {
         StartCoroutine(Spawner());
+        movement = GetComponent<EnemyMovement>();
+        animator = GetComponentInChildren<Animator>();
     }
+    void Update()
+    {
+        Handleanimatorations();
+    }
+
+    void Handleanimatorations()
+    {
+        if (!isDead && movement.isMoving)
+        {
+            if (movement.ChasingMove)
+                animator.Play("run");
+            else
+                animator.Play("walk");
+        }
+        if (!isDead && !movement.isMoving && !isAttacking)
+            animator.Play("idle");
+    }
+
 
     IEnumerator Spawner()
     {
@@ -34,17 +62,13 @@ public class BossController : MonoBehaviour
             // Only attack if player is close
             if (player != null)
             {
-                float dist = Vector3.Distance(transform.position, player.position);
+                dist = Vector3.Distance(transform.position, player.position);
                 if (dist <= detectionRange)
-                {
                     TrySpawnProjectile();
-                }
             }
-
             yield return new WaitForSeconds(spawnInterval);
         }
     }
-
     void TrySpawnProjectile()
     {
         if (maxSimultaneous > 0 && projectilesParent.childCount >= maxSimultaneous)
@@ -66,16 +90,34 @@ public class BossController : MonoBehaviour
         FireProjectile proj = go.GetComponent<FireProjectile>();
         proj.Initialize(target, projectileSpeed);
     }
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        Debug.Log("Player Collided with Enemy");
+        Debug.Log("PLayer is still clliding with enemy");
 
-        IAttackable dmg = other.GetComponent<IAttackable>();
-        // if projet hit an attackabale object -> [player]
-        if (dmg != null)
-            dmg.TakeDamage(damageAmount);
+        IAttackable gotHit = other.GetComponent<IAttackable>();
+
+        timer += Time.deltaTime;
+        if (timer >= intervalAttack)
+        {
+            // if enemy hit an attackabale object -> [player]
+            if (gotHit != null)
+                gotHit.TakeDamage(damageAmount);
+            timer = 0f;
+        }
     }
+    void OnTriggerEnter(Collider other)
+    {
+        animator.Play("attack_01");
+        movement.isMoving = false;
+        isAttacking = true;
+    }
+    void OnTriggerExit(Collider other)
+    {
+        isAttacking = false;
+        movement.isMoving = true;
+        timer = 0f;
 
+    }
     private void OnDrawGizmosSelected()
     {
         // Projectile radius
