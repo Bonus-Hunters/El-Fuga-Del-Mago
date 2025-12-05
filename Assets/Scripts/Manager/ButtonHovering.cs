@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
+    IPointerClickHandler
 {
     public TMP_Text text;    // assign your TMP text here
     public CanvasGroup background; // optional if you want to handle transparency
+    private bool isPointerInside = false;
+    public Color normalColor = Color.white;
+    public Color hoverColor = Color.gray;
 
     private void Start()
     {
@@ -16,15 +20,23 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             background.alpha = 0f;
 
         // Set default text color
-        text.color = Color.white;
+        text.color = normalColor;
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        text.color = Color.gray;  // hovered text color
+        isPointerInside = true;
+        text.color = hoverColor;  // hovered text color
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isPointerInside = false;
         text.color = Color.white; // normal text color
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Force the color to update *after* the click
+        text.color = normalColor;
     }
 }

@@ -7,6 +7,7 @@ public class PauseMenu : MonoBehaviour
 {
 
     public GameObject Container;
+    public GameObject soundSettingsContainer;
 
     // Update is called once per frame
     void Update()
@@ -27,12 +28,23 @@ public class PauseMenu : MonoBehaviour
 
     }
 
+    public void SoundSettings()
+    {
+
+        Container.SetActive(false);
+        soundSettingsContainer.SetActive(true);
+
+    }
+
+    // should make a transition and load the first scene [intro to the game]
+    // UnityEngine.SceneManagement.SceneManager.LoadScene("name of the scene");
+
 
     public void ExitButton()
     {
-        // should make a transition and load the first scene [intro to the game]
-        // UnityEngine.SceneManagement.SceneManager.LoadScene("name of the scene");
-
+        Destroy(Container);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("IntroScene");
+        Time.timeScale = 1;
     }
 
 }
