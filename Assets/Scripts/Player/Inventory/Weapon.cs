@@ -20,6 +20,9 @@ namespace Assets.Scripts.Player.Inventory
         public LayerMask hitLayers;
         public Transform attackOrigin;
 
+        public MonoBehaviour CoroutineHost;
+
+
         public Weapon(EquippableItem data) { DataItem = data; }
 
         public abstract void Attack();

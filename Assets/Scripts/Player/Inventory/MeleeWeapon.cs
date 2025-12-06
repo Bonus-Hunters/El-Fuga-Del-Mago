@@ -1,9 +1,11 @@
 ﻿using Assets.Scripts.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.Player.Inventory
@@ -11,17 +13,24 @@ namespace Assets.Scripts.Player.Inventory
     [CreateAssetMenu(fileName = "NewMeleeWeapon", menuName = "Inventory/MeleeWeapon")]
     public class MeleeWeapon : Weapon
     {
+        [NonSerialized]
         bool attacking = false;
         public MeleeWeapon(EquippableItem data) : base(data) { }
         public override void Attack()
         {
-            if (attacking) return;
+            if (attacking)
+            {
+                Debug.Log("Weapon is on cooldown, cannot attack yet.");
+                return;
+            }
             attacking = true;
 
-            Debug.Log("Attacking " + DataItem.name + " for " + damage + " damage!");
+            //Debug.Log("Attacking " + DataItem.name + " for " + damage + " damage!");
 
             PerformAttackRaycast();
-            ResetAttack();
+
+            // Start cooldown timer instead of resetting immediately
+            CoroutineHost.StartCoroutine(ResetAttackRoutine());
 
             //Debug.Log("Next attack available at: " + nextAttack + " " + attacking);
         }
@@ -53,6 +62,13 @@ namespace Assets.Scripts.Player.Inventory
         }
         protected virtual void ResetAttack()
         {
+            attacking = false;
+            Debug.Log("Weapon ready again.");
+        }
+        private IEnumerator ResetAttackRoutine()
+        {
+            yield return new WaitForSeconds(cooldownTime);
+
             attacking = false;
             Debug.Log("Weapon ready again.");
         }

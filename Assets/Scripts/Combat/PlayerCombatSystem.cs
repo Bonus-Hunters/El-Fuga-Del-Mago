@@ -39,6 +39,10 @@ namespace Assets.Scripts.Combat
             }
 
             equippedWeapon = newWeapon;
+
+            // Assign the coroutine host HERE (correct timing)
+            equippedWeapon.CoroutineHost = this;
+            
             equippedWeapon.attackOrigin = attackOrigin;
 
             if (newWeapon.DataItem.prefab != null)
