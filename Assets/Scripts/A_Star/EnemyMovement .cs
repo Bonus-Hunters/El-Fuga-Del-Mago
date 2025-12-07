@@ -7,7 +7,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] Transform player;
     NavMeshAgent agent;
     WayPointFollower wayPoint;
-    private bool isPlayerInAttackZone = false;
+    public bool isPlayerInAttackZone = false;
 
     public bool ChasingMove = false;
     public bool isMoving = true;
