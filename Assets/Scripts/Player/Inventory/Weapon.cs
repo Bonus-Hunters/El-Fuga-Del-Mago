@@ -23,7 +23,15 @@ namespace Assets.Scripts.Player.Inventory
         public MonoBehaviour CoroutineHost;
 
 
+        public Animator WeaponAnimator;
+
         public Weapon(EquippableItem data) { DataItem = data; }
+
+        public void SetAnimator(Animator animator)
+        {
+            WeaponAnimator = animator;
+            //WeaponAnimator.SetBool("equip", true);
+        }
 
         public abstract void Attack();
     }

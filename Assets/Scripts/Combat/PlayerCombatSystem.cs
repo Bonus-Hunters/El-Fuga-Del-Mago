@@ -53,6 +53,11 @@ namespace Assets.Scripts.Combat
                 weaponObjectInstance.transform.localEulerAngles = newWeapon.DataItem.equipRotationOffset;
 
 
+                Animator anim = weaponObjectInstance.GetComponent<Animator>();
+                anim.applyRootMotion = false; // prevent snapping
+                anim.enabled = true;           // enable Animator
+                equippedWeapon.SetAnimator(anim);
+
                 // Disable Rigidbody if it exists
                 Rigidbody rb = weaponObjectInstance.GetComponent<Rigidbody>();
                 if (rb != null)

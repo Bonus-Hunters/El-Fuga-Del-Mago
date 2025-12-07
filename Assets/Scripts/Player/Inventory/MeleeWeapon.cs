@@ -29,6 +29,12 @@ namespace Assets.Scripts.Player.Inventory
 
             PerformAttackRaycast();
 
+
+            if (WeaponAnimator != null)
+            {
+                WeaponAnimator.SetTrigger("attack1");
+            }
+
             // Start cooldown timer instead of resetting immediately
             CoroutineHost.StartCoroutine(ResetAttackRoutine());
 
@@ -68,7 +74,6 @@ namespace Assets.Scripts.Player.Inventory
         private IEnumerator ResetAttackRoutine()
         {
             yield return new WaitForSeconds(cooldownTime);
-
             attacking = false;
             Debug.Log("Weapon ready again.");
         }

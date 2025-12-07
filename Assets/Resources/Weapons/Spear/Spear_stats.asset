@@ -16,8 +16,10 @@ MonoBehaviour:
   range: 10
   damage: 5
   attackSpeed: 5
-  cooldownTime: 6
+  cooldownTime: 1.2
   hitLayers:
     serializedVersion: 2
     m_Bits: 8
   attackOrigin: {fileID: 0}
+  CoroutineHost: {fileID: 0}
+  WeaponAnimator: {fileID: 0}
