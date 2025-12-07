@@ -16,6 +16,8 @@ namespace Assets.Scripts.Combat
         public Transform attackOrigin;
         private GameObject weaponObjectInstance;
 
+        public AudioSource audioSource;
+
         void Start()
         {
             equippedWeapon = null;
@@ -39,13 +41,32 @@ namespace Assets.Scripts.Combat
             }
 
             equippedWeapon = newWeapon;
+
+            // Assign the coroutine host HERE (correct timing)
+            equippedWeapon.CoroutineHost = this;
+            
             equippedWeapon.attackOrigin = attackOrigin;
 
             if (newWeapon.DataItem.prefab != null)
             {
+                Debug.Log("Spawning weapon prefab for: " + newWeapon.DataItem.name);
                 weaponObjectInstance = Instantiate(newWeapon.DataItem.prefab, WeaponSlot);
-                weaponObjectInstance.transform.localPosition = Vector3.zero;
-                weaponObjectInstance.transform.localRotation = Quaternion.identity;
+                weaponObjectInstance.transform.localPosition = newWeapon.DataItem.equipPositionOffset;
+                weaponObjectInstance.transform.localEulerAngles = newWeapon.DataItem.equipRotationOffset;
+
+
+                Animator anim = weaponObjectInstance.GetComponent<Animator>();
+                anim.applyRootMotion = false; // prevent snapping
+                anim.enabled = true;           // enable Animator
+                equippedWeapon.SetAnimator(anim);
+
+                equippedWeapon.Owner = this;
+                // Assign the weapon sound
+                if (audioSource != null)
+                {
+                    Debug.Log("Assigning weapon sound for: " + newWeapon.DataItem.name);
+                    audioSource.clip = newWeapon.WeaponSound;
+                }
 
                 // Disable Rigidbody if it exists
                 Rigidbody rb = weaponObjectInstance.GetComponent<Rigidbody>();
@@ -68,15 +89,23 @@ namespace Assets.Scripts.Combat
             // Spawn pickup prefab
             GameObject dropped = Instantiate(equippedWeapon.DataItem.prefab, dropPos, Quaternion.identity);
 
-            dropped.AddComponent<Rigidbody>();
+            Rigidbody rb = dropped.GetComponent<Rigidbody>();
+            
+            if(rb == null)
+                dropped.AddComponent<Rigidbody>();
+            
             dropped.AddComponent<BoxCollider>();
             WeaponHandler handler = dropped.AddComponent<WeaponHandler>();
             handler.weaponData = equippedWeapon;
             dropped.layer = LayerMask.NameToLayer("Interactable");
 
+
             // Remove in-hand visual
             if (weaponObjectInstance != null)
                 Destroy(weaponObjectInstance);
+
+            audioSource.clip = null;
+            equippedWeapon.Owner = null;
 
             Debug.Log("Dropped weapon: " + equippedWeapon.DataItem.name);
 
