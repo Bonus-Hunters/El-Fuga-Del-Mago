@@ -9,6 +9,9 @@ public class Shooting : MonoBehaviour
     public GameObject projectile;
     public Transform firePoint;
     public float projectileSpeed = 30f;
+    private float timeToFire;
+    public float fireRate = 4;
+    public float arcRange = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +21,9 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))//right click
+        if (Input.GetMouseButton(1) && Time.time >= timeToFire)//right click
         {
+            timeToFire = Time.time + 1 /fireRate;
             ShootProjectile();
         }
     }
@@ -36,7 +40,13 @@ public class Shooting : MonoBehaviour
     }
     void InstantiateProjectile()
     {
+        //instantiate the projectile
         var projectileObj  = Instantiate(projectile, firePoint.position, Quaternion.identity) as GameObject;
+        //direction and speed
         projectileObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
+        //animate
+        iTween.PunchPosition(projectileObj, 
+            new Vector3(Random.Range(arcRange,arcRange), Random.Range(arcRange, arcRange),0)
+            ,Random.Range(0.5f,2));
     }
 }
