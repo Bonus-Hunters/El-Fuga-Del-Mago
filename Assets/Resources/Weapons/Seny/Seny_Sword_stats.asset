@@ -23,3 +23,5 @@ MonoBehaviour:
   attackOrigin: {fileID: 0}
   CoroutineHost: {fileID: 0}
   WeaponAnimator: {fileID: 0}
+  WeaponSound: {fileID: 8300000, guid: d7e4ff0b6c7931a4893a58c6d36f409f, type: 3}
+  Owner: {fileID: 0}

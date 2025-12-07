@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Combat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,11 @@ namespace Assets.Scripts.Player.Inventory
 
 
         public Animator WeaponAnimator;
+
+        public AudioClip WeaponSound;
+
+        public PlayerCombatSystem Owner;
+
 
         public Weapon(EquippableItem data) { DataItem = data; }
 

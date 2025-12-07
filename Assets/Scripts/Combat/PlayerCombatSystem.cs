@@ -16,6 +16,8 @@ namespace Assets.Scripts.Combat
         public Transform attackOrigin;
         private GameObject weaponObjectInstance;
 
+        public AudioSource audioSource;
+
         void Start()
         {
             equippedWeapon = null;
@@ -58,6 +60,14 @@ namespace Assets.Scripts.Combat
                 anim.enabled = true;           // enable Animator
                 equippedWeapon.SetAnimator(anim);
 
+                equippedWeapon.Owner = this;
+                // Assign the weapon sound
+                if (audioSource != null)
+                {
+                    Debug.Log("Assigning weapon sound for: " + newWeapon.DataItem.name);
+                    audioSource.clip = newWeapon.WeaponSound;
+                }
+
                 // Disable Rigidbody if it exists
                 Rigidbody rb = weaponObjectInstance.GetComponent<Rigidbody>();
                 if (rb != null)
@@ -89,9 +99,13 @@ namespace Assets.Scripts.Combat
             handler.weaponData = equippedWeapon;
             dropped.layer = LayerMask.NameToLayer("Interactable");
 
+
             // Remove in-hand visual
             if (weaponObjectInstance != null)
                 Destroy(weaponObjectInstance);
+
+            audioSource.clip = null;
+            equippedWeapon.Owner = null;
 
             Debug.Log("Dropped weapon: " + equippedWeapon.DataItem.name);
 
