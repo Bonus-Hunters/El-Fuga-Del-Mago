@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39c30662d0cc044ca70f8c091d2fc8a, type: 3}
+  m_Name: Seny_Sword_stats
+  m_EditorClassIdentifier: 
+  DataItem: {fileID: 11400000, guid: 0756a91e622aa6d499d96b5bf0877191, type: 2}
+  range: 6
+  damage: 2
+  attackSpeed: 2
+  cooldownTime: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  attackOrigin: {fileID: 0}
+  CoroutineHost: {fileID: 0}
+  WeaponAnimator: {fileID: 0}
+  WeaponSound: {fileID: 8300000, guid: d7e4ff0b6c7931a4893a58c6d36f409f, type: 3}
+  Owner: {fileID: 0}

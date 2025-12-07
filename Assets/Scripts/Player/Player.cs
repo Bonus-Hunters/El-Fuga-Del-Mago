@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Abstract;
 using Assets.Scripts.Combat;
+using Assets.Scripts.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class Player : Character
+    public class Player : Character, IAttackable
     {
         [Header("Camera")]
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float cameraPitch = 0f;
         [SerializeField] private float mouseSensitivity = 2f;
-
+        public bool IsInUI = false;
         private PlayerCombatSystem playerCombatSystem;
 
         protected void Start()
@@ -27,9 +28,23 @@ namespace Assets.Scripts.Player
         }
 
         protected override void Update()
-        {   
+        {
             base.Update();
-            HandleInput();
+            // If UI is open, do not process gameplay input
+            if (!IsInUI)
+                HandleInput();
+
+            // Cursor control depending on UI state
+            if (IsInUI)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
         private void HandleInput()
         {
@@ -43,17 +58,24 @@ namespace Assets.Scripts.Player
 
             if (Input.GetButtonDown("Jump"))
                 Jump();
-            if(Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
                 playerCombatSystem.DropWeapon();
         }
         public override void Rotate(float mouseX, float mouseY)
         {
+            if (IsInUI) return;
             base.Rotate(mouseX, mouseY);
 
             // vertical look (pitch)
             cameraPitch -= mouseY * mouseSensitivity;
             cameraPitch = Mathf.Clamp(cameraPitch, -80f, 80f);
             playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
+        }
+
+        void IAttackable.TakeDamage(float damage)
+        {
+            // adjust health reduction and death conditions 
+            Debug.Log("Player Got Hit!");
         }
     }
 }
