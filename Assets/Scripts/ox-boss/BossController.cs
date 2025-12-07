@@ -2,13 +2,15 @@ using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
 using UnityEngine.UI;
+using System;
 public class BossController : MonoBehaviour, IAttackable
 {
     #region Variables
     private float intervalAttack = 5.0f;
     private float dist;
     private float timer = 5.0f;
-
+    private bool playChaseSound;
+    private AnimatorStateInfo AnimatorInfo;
     [Header("Boss Stats")]
     private bool playerInRange = false;
     public float maxHealth = 100f;
@@ -33,8 +35,9 @@ public class BossController : MonoBehaviour, IAttackable
     public Transform projectilesParent, player;
     public EnemyMovement movement;
     public Animator animator;
+    EnemyZoneTrigger zoneTrigger;
     public Image healthFill;
-    public AudioSource deathSound, ChasingSound, AttackSound;
+    public AudioSource deathSound, ChasingSound, AttackSound, ProjectileSound;
     #endregion
 
 
@@ -43,6 +46,8 @@ public class BossController : MonoBehaviour, IAttackable
         StartCoroutine(Spawner());
         movement = GetComponent<EnemyMovement>();
         animator = GetComponentInChildren<Animator>();
+        zoneTrigger = GetComponentInChildren<EnemyZoneTrigger>();
+        Debug.Log(zoneTrigger);
         currentHealth = maxHealth;
         bossHealthUI.SetActive(false);
     }
@@ -50,8 +55,12 @@ public class BossController : MonoBehaviour, IAttackable
     void Update()
     {
         playerInRange = movement.isPlayerInAttackZone;
+        AnimatorInfo = animator.GetCurrentAnimatorStateInfo(0);
         HandleAnimations();
         DisplayHealthBar();
+        HandleChasingSound();
+        if (!movement.isPlayerInAttackZone)
+            playChaseSound = true;
     }
 
     #region Animations
@@ -68,8 +77,16 @@ public class BossController : MonoBehaviour, IAttackable
             animator.Play("idle");
         if (isDead)
         {
+            deathSound.Play();
             animator.Play("defy");
+            StartCoroutine(WaitForDeath(Math.Max(deathSound.clip.length, AnimatorInfo.length)));
         }
+    }
+
+    IEnumerator WaitForDeath(float length)
+    {
+        yield return new WaitForSeconds(length);
+        DestroySelf();
     }
     #endregion
 
@@ -94,7 +111,7 @@ public class BossController : MonoBehaviour, IAttackable
             return;
 
         // Pick random point around boss
-        Vector2 rand = Random.insideUnitCircle * spawnRadius;
+        Vector2 rand = UnityEngine.Random.insideUnitCircle * spawnRadius;
 
         Vector3 target = new Vector3(
             transform.position.x + rand.x,
@@ -108,6 +125,20 @@ public class BossController : MonoBehaviour, IAttackable
         // Use the generic Initialize method
         FireProjectile proj = go.GetComponent<FireProjectile>();
         proj.Initialize(target, projectileSpeed);
+    }
+    #endregion
+
+    #region Sounds
+    void HandleChasingSound()
+    {
+        if (movement.isPlayerInAttackZone && playChaseSound)
+            StartCoroutine(WaitForChasing(ChasingSound.clip.length));
+    }
+    IEnumerator WaitForChasing(float length)
+    {
+        ChasingSound.Play();
+        playChaseSound = false;
+        yield return new WaitForSeconds(length);
     }
     #endregion
 
@@ -125,7 +156,10 @@ public class BossController : MonoBehaviour, IAttackable
         {
             // if enemy hit an attackabale object -> [player]
             if (gotHit != null)
+            {
                 gotHit.TakeDamage(damageAmount);
+                ProjectileSound.Play();
+            }
             timer = 0f;
         }
     }
@@ -135,6 +169,7 @@ public class BossController : MonoBehaviour, IAttackable
         if (isDead)
             return;
         animator.Play("attack_01");
+        // AttackSound.Play();
         movement.isMoving = false;
         isAttacking = true;
     }
