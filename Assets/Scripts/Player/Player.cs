@@ -29,7 +29,7 @@ namespace Assets.Scripts.Player
         {
             base.Update();
             UpdateStatsUI();
-            Debug.Log("player health " + currentHealth);
+            //Debug.Log("player health " + currentHealth);
             // If UI is open, do not process gameplay input
             if (!playerInUI)
                 HandleInput();
@@ -92,5 +92,7 @@ namespace Assets.Scripts.Player
             fill = currentMana / maxMana;
             manaFill.fillAmount = fill;
         }
+        public float GetMana() {  return currentMana; }
+        public void SetMana(float mana) { currentMana = mana; }
     }
 }
