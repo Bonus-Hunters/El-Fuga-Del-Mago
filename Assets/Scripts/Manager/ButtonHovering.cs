@@ -9,7 +9,6 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 {
     public TMP_Text text;    // assign your TMP text here
     public CanvasGroup background; // optional if you want to handle transparency
-    private bool isPointerInside = false;
     public Color normalColor = Color.white;
     public Color hoverColor = Color.gray;
 
@@ -24,13 +23,11 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isPointerInside = true;
         text.color = hoverColor;  // hovered text color
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        isPointerInside = false;
         text.color = Color.white; // normal text color
     }
 

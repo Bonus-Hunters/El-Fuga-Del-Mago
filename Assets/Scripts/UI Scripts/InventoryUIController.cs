@@ -25,16 +25,16 @@ public class InventoryUIController : MonoBehaviour
     {
         inventoryPanel.gameObject.SetActive(true);
         inventoryPanel.RefreshDynamicInventory(invToDisplay);
-        player.IsInUI = true;
+        Player.playerInUI = true;
     }
 
     void Update()
     {
-        if(inventoryPanel.gameObject.activeInHierarchy &&
+        if (inventoryPanel.gameObject.activeInHierarchy &&
             Keyboard.current.qKey.wasPressedThisFrame)
         {
             inventoryPanel.gameObject.SetActive(false);
-            player.IsInUI = false;
+            Player.playerInUI = false;
         }
     }
 }

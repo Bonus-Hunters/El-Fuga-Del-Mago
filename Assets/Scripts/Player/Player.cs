@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float cameraPitch = 0f;
         [SerializeField] private float mouseSensitivity = 2f;
-        public bool IsInUI = false;
+        public static bool playerInUI = false;
         private PlayerCombatSystem playerCombatSystem;
 
         protected void Start()
@@ -31,11 +31,11 @@ namespace Assets.Scripts.Player
         {
             base.Update();
             // If UI is open, do not process gameplay input
-            if (!IsInUI)
+            if (!playerInUI)
                 HandleInput();
 
             // Cursor control depending on UI state
-            if (IsInUI)
+            if (playerInUI)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -48,6 +48,7 @@ namespace Assets.Scripts.Player
         }
         private void HandleInput()
         {
+
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
             float mouseX = Input.GetAxis("Mouse X");
@@ -63,7 +64,7 @@ namespace Assets.Scripts.Player
         }
         public override void Rotate(float mouseX, float mouseY)
         {
-            if (IsInUI) return;
+            if (playerInUI) return;
             base.Rotate(mouseX, mouseY);
 
             // vertical look (pitch)
@@ -75,7 +76,11 @@ namespace Assets.Scripts.Player
         void IAttackable.TakeDamage(float damage)
         {
             // adjust health reduction and death conditions 
+            maxHealth -= damage;
             Debug.Log("Player Got Hit!");
+            if (maxHealth <= 0)
+                Debug.Log("Player is Dead");
+
         }
     }
 }

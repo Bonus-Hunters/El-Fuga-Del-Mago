@@ -60,14 +60,14 @@ namespace Assets.Scripts.Abstract
 
         public virtual void Move(float horizontal, float vertical)
         {
-            if(Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
-            if(Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
+            if (Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
+            if (Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
 
             float speed = moveSpeed;
 
             if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
             {
-                speed = runningSpeed; 
+                speed = runningSpeed;
                 isRunning = true;
             }
             else isRunning = false;
