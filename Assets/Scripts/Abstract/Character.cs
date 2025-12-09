@@ -14,7 +14,9 @@ namespace Assets.Scripts.Abstract
     {
         [Header("Health Settings")]
         [SerializeField] protected float maxHealth = 100f;
-        [SerializeField] protected float Mana = 100f;
+        [SerializeField] protected float currentHealth = 100f;
+        [SerializeField] protected float currentMana = 100f;
+        [SerializeField] protected float maxMana = 100f;
 
         [Header("Movement Settings")]
         [SerializeField] protected float moveSpeed = 5f;
@@ -60,14 +62,14 @@ namespace Assets.Scripts.Abstract
 
         public virtual void Move(float horizontal, float vertical)
         {
-            if(Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
-            if(Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
+            if (Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
+            if (Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
 
             float speed = moveSpeed;
 
             if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
             {
-                speed = runningSpeed; 
+                speed = runningSpeed;
                 isRunning = true;
             }
             else isRunning = false;
@@ -117,8 +119,8 @@ namespace Assets.Scripts.Abstract
 
         public void TakeDamage(float damage)
         {
-            maxHealth -= damage;
-            if (maxHealth <= 0)
+            currentHealth -= damage;
+            if (currentHealth <= 0)
             {
                 //Die();
                 Debug.Log("Player has died.");
@@ -150,6 +152,20 @@ namespace Assets.Scripts.Abstract
                 audioSource.Play();
             }
         }
+        public void RestoreHealth(float amount)
+        {
+            currentHealth += amount;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+        }
+
+        public void RestoreMana(float amount)
+        {
+            currentMana += amount;
+            if (currentMana > maxMana)
+                currentMana = maxMana;
+        }
+
 
     }
 }

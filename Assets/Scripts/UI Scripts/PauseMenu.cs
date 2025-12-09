@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Player;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            Player.playerInUI = true;
+            AudioListener.pause = true;
             Container.SetActive(true);
             Time.timeScale = 0;
 
@@ -22,7 +25,8 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeButton()
     {
-
+        Player.playerInUI = false;
+        AudioListener.pause = false;
         Container.SetActive(false);
         Time.timeScale = 1;
 

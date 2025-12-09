@@ -7,23 +7,24 @@ using UnityEditor.UI;
 using UnityEngine;
 using Assets.Scripts;
 
-public class SkeletonController : MonoBehaviour
+public class SkeletonController : MonoBehaviour, IAttackable
 {
     // Start is called before the first frame update
-    bool isMoving = true, isAttacking = false;
+    bool isMoving = true, isAttacking = false, isDead = false;
+    private float health = 20f;
     WayPointFollower wayPoint;
     public Transform player;
     Animator anim;
     [Header("Player Detection")]
     [SerializeField] float detectionRange = 3f;
     [SerializeField] float dist = 1f;
-    [SerializeField] float damageAmount = 10f;
+    [SerializeField] float damageAmount = 2f;
 
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
         wayPoint = GetComponent<WayPointFollower>();
-        wayPoint.loopPath = false;
+        wayPoint.loopPath = true;
         anim.Play("Walk");
     }
 
@@ -59,6 +60,8 @@ public class SkeletonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDead)
+            return;
         // Check if player is in attack range
         if (checkForAttacks())
         {
@@ -94,6 +97,20 @@ public class SkeletonController : MonoBehaviour
             anim.SetBool("IsAttacking", false);
             anim.SetBool("IsIdle", true);
 
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Debug.Log("Skeleton took " + damage + " damage.");
+        health -= damage;
+        if (health <= 0 && !isDead)
+        {
+            isDead = true;
+            Destroy(gameObject);
+            anim.SetBool("IsWalking", false);
+            anim.SetBool("IsAttacking", false);
+            anim.SetBool("IsIdle", false);
         }
     }
 }

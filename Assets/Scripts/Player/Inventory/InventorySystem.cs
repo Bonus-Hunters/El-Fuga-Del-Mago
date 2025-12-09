@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 [System.Serializable]
-public class InventorySystem 
+public class InventorySystem
 {
     [SerializeField] private List<InventorySlot> inventorySlots;
     public List<InventorySlot> InventorySlots => inventorySlots;
@@ -13,12 +13,12 @@ public class InventorySystem
     public InventorySystem(int size)
     {
         inventorySlots = new List<InventorySlot>(size);
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
             inventorySlots.Add(new InventorySlot());
         }
     }
-    public bool AddToInventory(InventoryItem itemToAdd,int amountToAdd)
+    public bool AddToInventory(InventoryItem itemToAdd, int amountToAdd)
     {
         if (ContainsItem(itemToAdd, out List<InventorySlot> invSlot)) // check wether iten exists in inventory
         {
@@ -44,7 +44,7 @@ public class InventorySystem
     public bool ContainsItem(InventoryItem itemToAdd, out List<InventorySlot> invSlot)
     {
         invSlot = InventorySlots.Where(i => i.ItemData == itemToAdd).ToList();
-        return invSlot.Count>0;
+        return invSlot.Count > 0;
     }
     public bool HasFreeSlot(out InventorySlot freeSlot)
     {

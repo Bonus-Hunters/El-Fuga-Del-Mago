@@ -1,21 +1,21 @@
 using System.Collections;
 using UnityEngine;
-using Assets.Scripts.Abstract;
-using Assets.Scripts.Combat;
 using Assets.Scripts.Interfaces;
-
-public class BossController : MonoBehaviour
+using UnityEngine.UI;
+using System;
+public class BossController : MonoBehaviour, IAttackable
 {
-
+    #region Variables
     private float intervalAttack = 5.0f;
     private float dist;
     private float timer = 5.0f;
-    [Header("References")]
-    public GameObject projectilePrefab;
-    public Transform projectilesParent;
-    public Transform player;
-    public EnemyMovement movement;
-    public Animator animator;
+    private bool playChaseSound;
+    private AnimatorStateInfo AnimatorInfo;
+    [Header("Boss Stats")]
+    private bool playerInRange = false;
+    public float maxHealth = 100f;
+    public float currentHealth;
+    public float regenRate = 2f;
 
     [Header("Projectile Settings")]
     public float spawnRadius = 10f;
@@ -25,9 +25,21 @@ public class BossController : MonoBehaviour
 
     [Header("Player Detection")]
     public float detectionRange = 6f;
-    [SerializeField] float damageAmount = 10f;
-
+    [SerializeField] float ProjectileDamageAmount = 5f;
+    [SerializeField] float AttackDamageAmount = 10f;
     bool isAttacking = false, isDead = false;
+    #endregion
+
+    #region References
+    [Header("References")]
+    public GameObject projectilePrefab, bossHealthUI;
+    public Transform projectilesParent, player;
+    public EnemyMovement movement;
+    public Animator animator;
+    EnemyZoneTrigger zoneTrigger;
+    public Image healthFill;
+    public AudioSource deathSound, ChasingSound, AttackSound, ProjectileSound;
+    #endregion
 
 
     void Start()
@@ -35,13 +47,32 @@ public class BossController : MonoBehaviour
         StartCoroutine(Spawner());
         movement = GetComponent<EnemyMovement>();
         animator = GetComponentInChildren<Animator>();
-    }
-    void Update()
-    {
-        Handleanimatorations();
+        zoneTrigger = GetComponentInChildren<EnemyZoneTrigger>();
+        Debug.Log(zoneTrigger);
+        currentHealth = maxHealth;
+        bossHealthUI.SetActive(false);
     }
 
-    void Handleanimatorations()
+    void Update()
+    {
+        gameObject.transform.position = new Vector3(
+                 gameObject.transform.position.x,
+                 8.8f,
+                 gameObject.transform.position.z
+             );
+        if (isDead)
+            return;
+        playerInRange = movement.isPlayerInAttackZone;
+        AnimatorInfo = animator.GetCurrentAnimatorStateInfo(0);
+        HandleAnimations();
+        DisplayHealthBar();
+        HandleChasingSound();
+        if (!movement.isPlayerInAttackZone)
+            playChaseSound = true;
+    }
+
+    #region Animations
+    void HandleAnimations()
     {
         if (!isDead && movement.isMoving)
         {
@@ -52,9 +83,19 @@ public class BossController : MonoBehaviour
         }
         if (!isDead && !movement.isMoving && !isAttacking)
             animator.Play("idle");
+
     }
 
+    IEnumerator WaitForDeath(float length)
+    {
+        animator.Play("die");
+        deathSound.Play();
+        yield return new WaitForSeconds(length);
+        DestroySelf();
+    }
+    #endregion
 
+    #region Projectiles
     IEnumerator Spawner()
     {
         while (true)
@@ -71,15 +112,15 @@ public class BossController : MonoBehaviour
     }
     void TrySpawnProjectile()
     {
-        if (maxSimultaneous > 0 && projectilesParent.childCount >= maxSimultaneous)
+        if (maxSimultaneous > 0 && projectilesParent.childCount >= maxSimultaneous || isDead)
             return;
 
         // Pick random point around boss
-        Vector2 rand = Random.insideUnitCircle * spawnRadius;
+        Vector2 rand = UnityEngine.Random.insideUnitCircle * spawnRadius;
 
         Vector3 target = new Vector3(
             transform.position.x + rand.x,
-            transform.position.y,
+            transform.position.y - 20,
             transform.position.z + rand.y
         );
 
@@ -90,10 +131,27 @@ public class BossController : MonoBehaviour
         FireProjectile proj = go.GetComponent<FireProjectile>();
         proj.Initialize(target, projectileSpeed);
     }
+    #endregion
+
+    #region Sounds
+    void HandleChasingSound()
+    {
+        if (movement.isPlayerInAttackZone && playChaseSound)
+            StartCoroutine(WaitForChasing(ChasingSound.clip.length));
+    }
+    IEnumerator WaitForChasing(float length)
+    {
+        ChasingSound.Play();
+        playChaseSound = false;
+        yield return new WaitForSeconds(length);
+    }
+    #endregion
+
+    #region Combat Trigger
     void OnTriggerStay(Collider other)
     {
-        Debug.Log("PLayer is still clliding with enemy");
-
+        if (isDead)
+            return;
         IAttackable gotHit = other.GetComponent<IAttackable>();
 
         timer += Time.deltaTime;
@@ -101,16 +159,28 @@ public class BossController : MonoBehaviour
         {
             // if enemy hit an attackabale object -> [player]
             if (gotHit != null)
-                gotHit.TakeDamage(damageAmount);
+            {
+                gotHit.TakeDamage(ProjectileDamageAmount);
+                ProjectileSound.Play();
+            }
             timer = 0f;
         }
     }
+
     void OnTriggerEnter(Collider other)
     {
+        if (isDead)
+            return;
         animator.Play("attack_01");
+        // AttackSound.Play();
         movement.isMoving = false;
         isAttacking = true;
+        IAttackable gotHit = other.GetComponent<IAttackable>();
+        if (gotHit != null)
+            gotHit.TakeDamage(AttackDamageAmount);
+
     }
+
     void OnTriggerExit(Collider other)
     {
         isAttacking = false;
@@ -118,14 +188,61 @@ public class BossController : MonoBehaviour
         timer = 0f;
 
     }
-    private void OnDrawGizmosSelected()
-    {
-        // Projectile radius
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, spawnRadius);
+    #endregion
 
-        // Player detection range
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+    #region Health
+    void DisplayHealthBar()
+    {
+        if (!playerInRange)
+        {
+            bossHealthUI.SetActive(false);
+            RegenerateHealth();
+            return;
+        }
+        bossHealthUI.SetActive(true);
+        UpdateHealthUI();
     }
+
+    private void UpdateHealthUI()
+    {
+        float fill = currentHealth / maxHealth;
+        healthFill.fillAmount = fill;
+    }
+
+    private void RegenerateHealth()
+    {
+        if (currentHealth < maxHealth)
+        {
+            currentHealth += regenRate * Time.deltaTime;
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
+        }
+        else
+            currentHealth = maxHealth;
+    }
+    #endregion
+
+    #region Death
+    public void TakeDamage(float damage)
+    {
+        Debug.Log("OX boss got damaged");
+        currentHealth -= damage;
+        HandleDeath();
+    }
+
+    void HandleDeath()
+    {
+        if (currentHealth > 0)
+            return;
+        isDead = true;
+        currentHealth = 0;
+        Debug.Log("Boss is dead");
+        StartCoroutine(WaitForDeath(Math.Max(deathSound.clip.length, AnimatorInfo.length)));
+
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
+    #endregion
 }
