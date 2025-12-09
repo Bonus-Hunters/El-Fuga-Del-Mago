@@ -1,12 +1,7 @@
 ﻿using Assets.Scripts.Abstract;
 using Assets.Scripts.Combat;
 using Assets.Scripts.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine.UI;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -20,6 +15,9 @@ namespace Assets.Scripts.Player
         public static bool playerInUI = false;
         private PlayerCombatSystem playerCombatSystem;
 
+        [Header("Stats")]
+        public Image healthFill;
+        public Image manaFill;
         protected void Start()
         {
             playerCombatSystem = GetComponent<PlayerCombatSystem>();
@@ -30,6 +28,8 @@ namespace Assets.Scripts.Player
         protected override void Update()
         {
             base.Update();
+            UpdateStatsUI();
+            Debug.Log("player health " + currentHealth);
             // If UI is open, do not process gameplay input
             if (!playerInUI)
                 HandleInput();
@@ -76,11 +76,21 @@ namespace Assets.Scripts.Player
         void IAttackable.TakeDamage(float damage)
         {
             // adjust health reduction and death conditions 
-            maxHealth -= damage;
+            currentHealth -= damage;
             Debug.Log("Player Got Hit!");
-            if (maxHealth <= 0)
+            if (currentHealth <= 0)
+            {
+                currentHealth = 0;
                 Debug.Log("Player is Dead");
+            }
 
+        }
+        private void UpdateStatsUI()
+        {
+            float fill = currentHealth / maxHealth;
+            healthFill.fillAmount = fill;
+            fill = currentMana / maxMana;
+            manaFill.fillAmount = fill;
         }
     }
 }

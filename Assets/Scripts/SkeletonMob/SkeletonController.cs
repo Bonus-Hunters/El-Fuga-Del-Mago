@@ -24,7 +24,7 @@ public class SkeletonController : MonoBehaviour, IAttackable
     {
         anim = GetComponentInChildren<Animator>();
         wayPoint = GetComponent<WayPointFollower>();
-        wayPoint.loopPath = false;
+        wayPoint.loopPath = true;
         anim.Play("Walk");
     }
 
