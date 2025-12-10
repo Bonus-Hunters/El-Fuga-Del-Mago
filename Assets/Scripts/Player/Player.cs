@@ -29,7 +29,7 @@ namespace Assets.Scripts.Player
         {
             base.Update();
             UpdateStatsUI();
-            Debug.Log("player health " + currentHealth);
+            //Debug.Log("player health " + currentHealth);
             // If UI is open, do not process gameplay input
             if (!playerInUI)
                 HandleInput();

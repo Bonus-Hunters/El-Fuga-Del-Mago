@@ -15,6 +15,7 @@ public class ConversationGraph : MonoBehaviour
 
     private Dictionary<string, DialogueNode> nodeDictionary;
     private DialogueNode currentNode;
+
     private bool conversationActive = false;
 
     // Start is called before the first frame update
@@ -127,7 +128,7 @@ public class ConversationGraph : MonoBehaviour
     private void EndConversation()
     {
         conversationActive = false;
-        currentNode = null;
+        //currentNode = null;
         Debug.Log("Conversation ended.");
     }
 

@@ -19,6 +19,7 @@ public class NPCsystem : MonoBehaviour
         {
             if (conversation != null)
             {
+                //Debug.Log("oh yeah im in");
                 conversation.StartConversation();
             }
         }
@@ -26,6 +27,7 @@ public class NPCsystem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("Trigger entered");
         if (other.CompareTag("Player"))
         {
             player_detected = true;
@@ -42,6 +44,7 @@ public class NPCsystem : MonoBehaviour
         {
             player_detected = false;
             Debug.Log("Player left the area!");
+            
 
             // Hide UI indicator
         //    UIManager.HideInteractPrompt();
