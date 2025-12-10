@@ -18,6 +18,10 @@ public class ConversationGraph : MonoBehaviour
 
     private bool conversationActive = false;
 
+    [Header("UI")]
+    [SerializeField]
+    public DialogueUI dialogueUI; // Reference to your DialogueUI script
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,11 +66,14 @@ public class ConversationGraph : MonoBehaviour
     {
         if (currentNode == null) return;
 
-        Debug.Log($"NPC: {currentNode.dialogueText}");
+        //Debug.Log($"NPC: {currentNode.dialogueText}");
+
+        dialogueUI.ShowNode(currentNode);
 
         if (currentNode.isEndNode)
         {
             EndConversation();
+            StartCoroutine(HideDialogueAfterDelay(2f));
             return;
         }
 
@@ -85,6 +92,12 @@ public class ConversationGraph : MonoBehaviour
                 Debug.Log($"{i + 1}. [LOCKED] {option.optionText}");
             }
         }
+    }
+    private IEnumerator HideDialogueAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (dialogueUI != null)
+            dialogueUI.HideDialogue();
     }
 
     private bool IsOptionAvailable(DialogueOption option)
