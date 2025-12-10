@@ -20,9 +20,7 @@ public class Projectile : MonoBehaviour
         col.isTrigger = true; // projectile expects trigger collisions
     }
 
-    // Call this when spawning/activating the projectile:
-    // var p = Instantiate(prefab); p.GetComponent<Projectile>().Init(direction, speed, damage, lifetime);
-    public void Init(Vector3 dir, float spd, float dmg, float lifetime)
+       public void Init(Vector3 dir, float spd, float dmg, float lifetime)
     {
         direction = dir.normalized;
         speed = spd;

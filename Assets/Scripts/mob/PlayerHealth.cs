@@ -4,7 +4,7 @@ public class PlayerHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
     float hp;
-
+// initial health = 100
     void Awake() => hp = maxHealth;
 
     public void TakeDamage(float dmg)
