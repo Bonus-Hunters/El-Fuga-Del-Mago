@@ -17,11 +17,21 @@ public class ConversationGraph : MonoBehaviour
     private DialogueNode currentNode;
 
     private bool conversationActive = false;
+    
+
 
     [Header("UI")]
     [SerializeField]
     public DialogueUI dialogueUI; // Reference to your DialogueUI script
 
+
+
+    private bool conversationDone;
+
+    public bool isDone()
+    {
+        return conversationDone;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +67,7 @@ public class ConversationGraph : MonoBehaviour
         if (nodeDictionary.ContainsKey(startNodeID))
         {
             conversationActive = true;
+            conversationDone = false;
             currentNode = nodeDictionary[startNodeID];
             DisplayCurrentNode();
         }
@@ -73,6 +84,7 @@ public class ConversationGraph : MonoBehaviour
         if (currentNode.isEndNode)
         {
             EndConversation();
+            conversationDone = true;
             StartCoroutine(HideDialogueAfterDelay(2f));
             return;
         }
@@ -132,7 +144,7 @@ public class ConversationGraph : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
+               // Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
                 EndConversation();
             }
         }
