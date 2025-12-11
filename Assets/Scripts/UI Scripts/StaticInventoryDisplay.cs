@@ -5,7 +5,7 @@ using UnityEngine;
 public class StaticInventoryDisplay : InventoryDisplay
 {
     [SerializeField] private InventoryHolder inventoryHolder;
-    [SerializeField] private InventorySlot_UI[] slots;
+    public InventorySlot_UI[] slots;
     protected override void Start()
     {
         base.Start();
@@ -15,15 +15,15 @@ public class StaticInventoryDisplay : InventoryDisplay
             inventorySystem.onInventorySlotChanged += UpdateSlot;
         }
         else Debug.LogWarning($"No inventory assigned to {this.gameObject}");
-        AssignSlot(inventorySystem);
+        AssignSlots(inventorySystem);
     }
-    public override void AssignSlot(InventorySystem invToDisplay)
+    public override void AssignSlots(InventorySystem invToDisplay)
     {
         slotDictionary = new Dictionary<InventorySlot_UI, InventorySlot>();
         if (slots.Length != inventorySystem.InventorySize) Debug.Log($"inventory slots out of sync on {this.gameObject}");
         for (int i = 0; i < inventorySystem.InventorySize; i++)
         {
-            slotDictionary.Add(slots[i],inventorySystem.InventorySlots[i]);
+            slotDictionary.Add(slots[i], inventorySystem.InventorySlots[i]);
             slots[i].Init(inventorySystem.InventorySlots[i]);
         }
     }

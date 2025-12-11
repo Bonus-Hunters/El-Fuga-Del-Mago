@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,8 +10,14 @@ using UnityEngine;
 namespace Assets.Scripts.Abstract
 {
     [RequireComponent(typeof(CharacterController))]
-    public abstract class Character : MonoBehaviour, IMovable
+    public abstract class Character : MonoBehaviour, IMovable, IAttackable
     {
+        [Header("Health Settings")]
+        [SerializeField] protected float maxHealth = 120f;
+        [SerializeField] protected float currentHealth = 120f;
+        [SerializeField] protected float currentMana = 80f;
+        [SerializeField] protected float maxMana = 80f;
+
         [Header("Movement Settings")]
         [SerializeField] protected float moveSpeed = 5f;
         [SerializeField] protected float runningSpeed = 6.9f;
@@ -27,16 +34,24 @@ namespace Assets.Scripts.Abstract
 
         protected CharacterController controller;
         protected Vector3 velocity;
+
         protected bool isGrounded;
         protected bool isCrouching;
-        protected bool isJumping;
         protected bool isRunning;
+
+        [Header("Audio Settings")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip walkClip;
+        [SerializeField] private AudioClip runClip;
+        [SerializeField] private AudioClip jumpClip;
+        [SerializeField] private AudioClip crouchClip;
 
 
 
         protected virtual void Awake()
         {
             controller = GetComponent<CharacterController>();
+            audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
         }
 
         protected virtual void Update()
@@ -47,16 +62,23 @@ namespace Assets.Scripts.Abstract
 
         public virtual void Move(float horizontal, float vertical)
         {
-            if(Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
-            if(Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
+            if (Input.GetKeyDown(KeyCode.LeftControl)) isCrouching = true;
+            if (Input.GetKeyUp(KeyCode.LeftControl)) isCrouching = false;
 
             float speed = moveSpeed;
 
-            if (Input.GetKey(KeyCode.LeftShift) && !isCrouching) speed = runningSpeed;
+            if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
+            {
+                speed = runningSpeed;
+                isRunning = true;
+            }
+            else isRunning = false;
             if (isCrouching) speed = crouchSpeed;
 
             Vector3 move = transform.right * horizontal + transform.forward * vertical;
             controller.Move(move * speed * Time.deltaTime);
+
+            PlayMovementSound(move.magnitude, isRunning, isCrouching);
         }
 
         public virtual void Rotate(float mouseX, float mouseY)
@@ -76,6 +98,12 @@ namespace Assets.Scripts.Abstract
             if (isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+
+                // Play jump sound
+                if (audioSource != null && jumpClip != null)
+                {
+                    audioSource.PlayOneShot(jumpClip);
+                }
             }
         }
         public void AdjustCrouchHeight()
@@ -88,5 +116,56 @@ namespace Assets.Scripts.Abstract
             float heightDiff = controller.height - previousHeight;
             controller.center -= new Vector3(0, heightDiff / 2, 0);
         }
+
+        public void TakeDamage(float damage)
+        {
+            currentHealth -= damage;
+            if (currentHealth <= 0)
+            {
+                //Die();
+                Debug.Log("Player has died.");
+            }
+        }
+        private void PlayMovementSound(float moveAmount, bool running, bool crouching)
+        {
+            if (moveAmount <= 0.1f || audioSource == null)
+            {
+                audioSource.Stop();
+                return;
+            }
+
+            AudioClip clipToPlay = walkClip;
+
+            if (running)
+                clipToPlay = runClip;
+            else if (crouching)
+                clipToPlay = crouchClip;
+
+
+            if (audioSource.clip != clipToPlay || !audioSource.isPlaying)
+            {
+                audioSource.clip = clipToPlay;
+
+                // Add random start offset between 0 and 30% of the clip length
+                audioSource.time = UnityEngine.Random.Range(0f, clipToPlay.length * 0.3f);
+
+                audioSource.Play();
+            }
+        }
+        public void RestoreHealth(float amount)
+        {
+            currentHealth += amount;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+        }
+
+        public void RestoreMana(float amount)
+        {
+            currentMana += amount;
+            if (currentMana > maxMana)
+                currentMana = maxMana;
+        }
+
+
     }
 }
