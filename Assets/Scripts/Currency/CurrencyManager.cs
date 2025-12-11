@@ -6,7 +6,6 @@ public class CurrencyManager : MonoBehaviour
     public PlayerWallet playerWallet;
 
     [Header("UI")]
-    public CurrencyPopup popupPrefab;
     public Canvas uiCanvas;
 
     private void Awake()
@@ -18,16 +17,5 @@ public class CurrencyManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-    }
-
-    public void ShowPopup(string text, Color color)
-    {
-        if (popupPrefab == null || uiCanvas == null)
-            return;
-
-        // Create a new popup every time
-        Debug.Log("Showing currency popup: " + text);
-        CurrencyPopup popup = Instantiate(popupPrefab, uiCanvas.transform);
-        popup.Setup(text, color);
     }
 }

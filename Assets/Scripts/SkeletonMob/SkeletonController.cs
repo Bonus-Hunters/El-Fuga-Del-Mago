@@ -107,7 +107,8 @@ public class SkeletonController : MonoBehaviour, IAttackable
         if (health <= 0 && !isDead)
         {
             isDead = true;
-            Destroy(gameObject);
+            Destroy(transform.parent.gameObject);
+           // Destroy(gameObject);
             anim.SetBool("IsWalking", false);
             anim.SetBool("IsAttacking", false);
             anim.SetBool("IsIdle", false);
