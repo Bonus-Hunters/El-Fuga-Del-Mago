@@ -1,14 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RangedEnemy : MonoBehaviour
 {
     [Header("References")]
-    public Transform firePoint;              // where bullets spawn
-    public GameObject projectilePrefab;      // projectile prefab (required)
+    public Transform firePoint;
+    public GameObject projectilePrefab;
+    public Animator animator;                // drag Animator here in Inspector
 
     [Header("Shooting")]
     public float range = 15f;
-    public float fireInterval = 1.2f;        // seconds between shots
+    public float fireInterval = 1.2f;
     public float projectileSpeed = 25f;
     public float projectileDamage = 15f;
     public float projectileLifetime = 3f;
@@ -20,14 +21,17 @@ public class RangedEnemy : MonoBehaviour
 
     Transform player;
     float cooldown = 0f;
-
-    // --- NEW: track the last projectile spawned by this enemy ---
     GameObject lastProjectile;
+
+    // NEW: track last position to compute speed
+    Vector3 lastPosition;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (firePoint == null) firePoint = transform;
+
+        lastPosition = transform.position;
     }
 
     void Update()
@@ -42,12 +46,23 @@ public class RangedEnemy : MonoBehaviour
         if (look.sqrMagnitude > 0.001f)
             transform.rotation = Quaternion.LookRotation(look);
 
+        // movement
         if (chasePlayer && dist > stopDistance)
         {
             Vector3 dir = (player.position - transform.position).normalized;
             transform.position += dir * chaseSpeed * Time.deltaTime;
         }
 
+        // === ANIMATION: set IsRunning based on actual movement speed ===
+        float speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        bool isRunning = speed > 0.05f;   // small threshold so tiny jitter doesn't count
+
+        if (animator != null)
+        {
+            animator.SetBool("IsRunning", isRunning);
+        }
+
+        // shooting
         if (dist <= range)
         {
             cooldown -= Time.deltaTime;
@@ -57,6 +72,9 @@ public class RangedEnemy : MonoBehaviour
                 cooldown = fireInterval;
             }
         }
+
+        // update last position at end of frame
+        lastPosition = transform.position;
     }
 
     void ShootAt(Vector3 targetPos)
@@ -64,15 +82,12 @@ public class RangedEnemy : MonoBehaviour
         Vector3 spawnPos = firePoint.position;
         Vector3 dir = (targetPos - spawnPos).normalized;
 
-        // --- DESTROY previous projectile if it still exists ---
         if (lastProjectile != null)
         {
-            // Destroy previous immediately (will actually be destroyed at end of frame)
             Destroy(lastProjectile);
             lastProjectile = null;
         }
 
-        // Spawn new projectile (simple Instantiate path - expected when using destroy pattern)
         if (projectilePrefab == null)
         {
             Debug.LogError("RangedEnemy: projectilePrefab not assigned.");
@@ -80,18 +95,15 @@ public class RangedEnemy : MonoBehaviour
         }
 
         GameObject projGO = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
-        // ensure the object is positioned/rotated correctly
         projGO.transform.position = spawnPos;
         projGO.transform.rotation = Quaternion.LookRotation(dir);
 
-        // init projectile if it has Projectile component
         var proj = projGO.GetComponent<Projectile>();
         if (proj != null)
         {
             proj.Init(dir, projectileSpeed, projectileDamage, projectileLifetime);
         }
 
-        // keep reference so next shot will destroy this one
         lastProjectile = projGO;
     }
 
@@ -106,7 +118,6 @@ public class RangedEnemy : MonoBehaviour
         }
     }
 
-    // Optional: clean up if enemy is destroyed (destroy any leftover projectile it owned)
     void OnDestroy()
     {
         if (lastProjectile != null)
