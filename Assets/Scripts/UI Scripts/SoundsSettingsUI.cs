@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Player;
 
 public class SoundsSettingsUI : MonoBehaviour
 {
@@ -19,6 +20,6 @@ public class SoundsSettingsUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+     
     }
 }

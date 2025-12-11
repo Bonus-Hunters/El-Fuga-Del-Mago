@@ -13,9 +13,9 @@ public class BossController : MonoBehaviour, IAttackable
     private AnimatorStateInfo AnimatorInfo;
     [Header("Boss Stats")]
     private bool playerInRange = false;
-    public float maxHealth = 100f;
-    public float currentHealth;
-    public float regenRate = 2f;
+    public float maxHealth = 300f;
+    public float currentHealth = 300f;
+    public float regenRate = 10f;
 
     [Header("Projectile Settings")]
     public float spawnRadius = 10f;
@@ -25,8 +25,8 @@ public class BossController : MonoBehaviour, IAttackable
 
     [Header("Player Detection")]
     public float detectionRange = 6f;
-    [SerializeField] float ProjectileDamageAmount = 5f;
-    [SerializeField] float AttackDamageAmount = 10f;
+    [SerializeField] float ProjectileDamageAmount = 10f;
+    [SerializeField] float AttackDamageAmount = 20f;
     bool isAttacking = false, isDead = false;
     #endregion
 
@@ -49,7 +49,6 @@ public class BossController : MonoBehaviour, IAttackable
         animator = GetComponentInChildren<Animator>();
         zoneTrigger = GetComponentInChildren<EnemyZoneTrigger>();
         Debug.Log(zoneTrigger);
-        currentHealth = maxHealth;
         bossHealthUI.SetActive(false);
     }
 

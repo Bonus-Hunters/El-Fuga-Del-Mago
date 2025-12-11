@@ -13,10 +13,10 @@ namespace Assets.Scripts.Abstract
     public abstract class Character : MonoBehaviour, IMovable, IAttackable
     {
         [Header("Health Settings")]
-        [SerializeField] protected float maxHealth = 100f;
-        [SerializeField] protected float currentHealth = 100f;
-        [SerializeField] protected float currentMana = 100f;
-        [SerializeField] protected float maxMana = 100f;
+        [SerializeField] protected float maxHealth = 120f;
+        [SerializeField] protected float currentHealth = 120f;
+        [SerializeField] protected float currentMana = 80f;
+        [SerializeField] protected float maxMana = 80f;
 
         [Header("Movement Settings")]
         [SerializeField] protected float moveSpeed = 5f;
