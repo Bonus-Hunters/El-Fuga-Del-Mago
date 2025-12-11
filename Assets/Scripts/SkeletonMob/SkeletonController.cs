@@ -11,14 +11,16 @@ public class SkeletonController : MonoBehaviour, IAttackable
 {
     // Start is called before the first frame update
     bool isMoving = true, isAttacking = false, isDead = false;
-    public float health = 20f;
+
+    [Header("Mob Stats")]
+    [SerializeField] float health = 60f;
+    [SerializeField] float damageAmount = 2f;
     WayPointFollower wayPoint;
     public Transform player;
     Animator anim;
     [Header("Player Detection")]
     [SerializeField] float detectionRange = 3f;
     [SerializeField] float dist = 1f;
-    [SerializeField] float damageAmount = 2f;
 
     void Start()
     {

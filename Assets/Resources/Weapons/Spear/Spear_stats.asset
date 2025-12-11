@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DataItem: {fileID: 11400000, guid: 2d6530d44f0e766489f4e5bbff5721ee, type: 2}
   range: 10
-  damage: 5
+  damage: 10
   attackSpeed: 5
   cooldownTime: 1.2
   hitLayers:
