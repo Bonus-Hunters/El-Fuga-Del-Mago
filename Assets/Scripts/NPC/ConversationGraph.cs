@@ -15,8 +15,23 @@ public class ConversationGraph : MonoBehaviour
 
     private Dictionary<string, DialogueNode> nodeDictionary;
     private DialogueNode currentNode;
-    private bool conversationActive = false;
 
+    public bool conversationActive = false;
+    
+
+
+    [Header("UI")]
+    [SerializeField]
+    public DialogueUI dialogueUI; // Reference to your DialogueUI script
+
+
+
+    private bool conversationDone;
+
+    public bool isDone()
+    {
+        return conversationDone;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +67,7 @@ public class ConversationGraph : MonoBehaviour
         if (nodeDictionary.ContainsKey(startNodeID))
         {
             conversationActive = true;
+            conversationDone = false;
             currentNode = nodeDictionary[startNodeID];
             DisplayCurrentNode();
         }
@@ -61,11 +77,15 @@ public class ConversationGraph : MonoBehaviour
     {
         if (currentNode == null) return;
 
-        Debug.Log($"NPC: {currentNode.dialogueText}");
+        //Debug.Log($"NPC: {currentNode.dialogueText}");
+
+        dialogueUI.ShowNode(currentNode);
 
         if (currentNode.isEndNode)
         {
             EndConversation();
+            conversationDone = true;
+            StartCoroutine(HideDialogueAfterDelay(2f));
             return;
         }
 
@@ -84,6 +104,12 @@ public class ConversationGraph : MonoBehaviour
                 Debug.Log($"{i + 1}. [LOCKED] {option.optionText}");
             }
         }
+    }
+    private IEnumerator HideDialogueAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (dialogueUI != null)
+            dialogueUI.HideDialogue();
     }
 
     private bool IsOptionAvailable(DialogueOption option)
@@ -118,8 +144,9 @@ public class ConversationGraph : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
+               // Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
                 EndConversation();
+                StartCoroutine(HideDialogueAfterDelay(2f));
             }
         }
     }
@@ -127,7 +154,7 @@ public class ConversationGraph : MonoBehaviour
     private void EndConversation()
     {
         conversationActive = false;
-        currentNode = null;
+        //currentNode = null;
         Debug.Log("Conversation ended.");
     }
 

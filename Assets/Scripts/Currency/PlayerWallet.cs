@@ -29,8 +29,6 @@ public class PlayerWallet : MonoBehaviour
         {
             currencies.Add(new CurrencyAmount { currencyData = data, amount = Mathf.Min(value, data.maxAmount) });
         }
-        // Show popup
-        CurrencyManager.Instance.ShowPopup($"+{value} {data.currencyName}", Color.green);
 
         Debug.Log($"Added {value} {data.currencyName}. Current: {GetAmount(data)}");
     }
@@ -44,8 +42,6 @@ public class PlayerWallet : MonoBehaviour
         if (currency != null && currency.amount >= value)
         {
             currency.amount -= value;
-
-            CurrencyManager.Instance.ShowPopup($"-{value} {data.currencyName}", Color.red);
 
             Debug.Log($"Spent {value} {data.currencyName}. Remaining: {currency.amount}");
             return true;

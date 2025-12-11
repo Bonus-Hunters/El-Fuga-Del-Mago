@@ -1,208 +1,48 @@
-/*using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class DialogueUI : MonoBehaviour
 {
-    [Header("UI References")]
+    [Header("UI Elements")]
     public GameObject dialoguePanel;
-    public TextMeshProUGUI npcNameText;
-    public TextMeshProUGUI dialogueText;
-    public Transform optionsContainer;
-    public GameObject optionButtonPrefab;
-    public GameObject interactPrompt;
-    public Button continueButton;
+    public TMP_Text dialogueText;
 
-    private ConversationGraph currentConversation;
-    private List<Button> currentOptionButtons = new List<Button>();
+    public TMP_Text option0;
+    public TMP_Text option1;
+    public TMP_Text option2;
+    public TMP_Text option3;
 
-    // Singleton pattern
-    private static DialogueUI instance;
-    public static DialogueUI Instance
+    private List<TMP_Text> optionSlots;
+    private DialogueNode currentNode;
+
+    void Awake()
     {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<DialogueUI>();
-            }
-            return instance;
-        }
+        optionSlots = new List<TMP_Text> { option0, option1, option2, option3 };
     }
 
-    void Start()
-    {
-        HideDialogue();
-        if (interactPrompt != null)
-            interactPrompt.SetActive(false);
-
-        // Setup continue button
-        if (continueButton != null)
-        {
-            continueButton.onClick.AddListener(OnContinueClicked);
-            continueButton.gameObject.SetActive(false);
-        }
-    }
-
-    public void ShowInteractPrompt(bool show)
-    {
-        if (interactPrompt != null)
-            interactPrompt.SetActive(show);
-    }
-
-    public void StartDialogue(ConversationGraph conversation, string npcName)
-    {
-        currentConversation = conversation;
-
-        // Setup event listeners
-        currentConversation.OnDialogueTextChanged += OnDialogueTextUpdated;
-        currentConversation.OnOptionsChanged += OnOptionsUpdated;
-        currentConversation.OnConversationStateChanged += OnConversationStateChanged;
-
-        // Set NPC name
-        if (npcNameText != null)
-            npcNameText.text = npcName;
-
-        ShowDialogue();
-        ShowInteractPrompt(false);
-
-        // Trigger initial UI update
-        OnDialogueTextUpdated(currentConversation.GetCurrentDialogueText());
-        OnOptionsUpdated(currentConversation.GetAvailableOptions());
-    }
-
-    private void ShowDialogue()
+    public void ShowNode(DialogueNode node)
     {
         dialoguePanel.SetActive(true);
-    }
+        currentNode = node;
 
+        dialogueText.text = node.dialogueText;
+
+        for (int i = 0; i < optionSlots.Count; i++)
+        {
+            if (i < node.options.Count)
+            {
+                optionSlots[i].text = node.options[i].optionText;
+                optionSlots[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                optionSlots[i].gameObject.SetActive(false);
+            }
+        }
+    }
     public void HideDialogue()
     {
         dialoguePanel.SetActive(false);
-
-        // Clean up event listeners
-        if (currentConversation != null)
-        {
-            currentConversation.OnDialogueTextChanged -= OnDialogueTextUpdated;
-            currentConversation.OnOptionsChanged -= OnOptionsUpdated;
-            currentConversation.OnConversationStateChanged -= OnConversationStateChanged;
-        }
-
-        ClearOptionButtons();
-        HideContinueButton();
     }
-
-    private void OnDialogueTextUpdated(string newText)
-    {
-        if (dialogueText != null)
-            dialogueText.text = newText;
-    }
-
-    private void OnOptionsUpdated(List<DialogueOption> options)
-    {
-        ClearOptionButtons();
-
-        if (options == null || options.Count == 0)
-        {
-            // If no options and it's an end node, show continue button
-            if (currentConversation != null && currentConversation.IsCurrentNodeEnd())
-            {
-                ShowContinueButton();
-            }
-            return;
-        }
-
-        // Create buttons for each available option
-        foreach (var option in options)
-        {
-            CreateOptionButton(option);
-        }
-    }
-
-    private void CreateOptionButton(DialogueOption option)
-    {
-        if (optionButtonPrefab == null || optionsContainer == null) return;
-
-        GameObject buttonObj = Instantiate(optionButtonPrefab, optionsContainer);
-        Button button = buttonObj.GetComponent<Button>();
-        TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-
-        if (buttonText != null)
-            buttonText.text = option.optionText;
-
-        // Add click listener
-        button.onClick.AddListener(() => OnOptionSelected(option));
-
-        currentOptionButtons.Add(button);
-
-        // Visual feedback for locked options
-        if (option.requiresQuestCompletion && !QuestManager.IsQuestCompleted(option.requiredQuestID))
-        {
-            button.interactable = false;
-            if (buttonText != null)
-                buttonText.text = $"[LOCKED] {option.optionText}";
-        }
-    }
-
-    private void OnOptionSelected(DialogueOption option)
-    {
-        if (currentConversation != null)
-        {
-            currentConversation.SelectOptionByTarget(option.targetNodeID);
-        }
-    }
-
-    private void OnContinueClicked()
-    {
-        if (currentConversation != null)
-        {
-            currentConversation.EndConversation();
-        }
-    }
-
-    private void OnConversationStateChanged(bool isActive)
-    {
-        if (!isActive)
-        {
-            HideDialogue();
-        }
-    }
-
-    public void ShowContinueButton()
-    {
-        if (continueButton != null)
-        {
-            continueButton.gameObject.SetActive(true);
-        }
-    }
-
-    public void HideContinueButton()
-    {
-        if (continueButton != null)
-        {
-            continueButton.gameObject.SetActive(false);
-        }
-    }
-
-    private void ClearOptionButtons()
-    {
-        foreach (Button button in currentOptionButtons)
-        {
-            if (button != null)
-                Destroy(button.gameObject);
-        }
-        currentOptionButtons.Clear();
-    }
-
-    public void UpdateDialogueDisplay()
-    {
-        // This method can be called externally if needed
-        if (currentConversation != null)
-        {
-            OnDialogueTextUpdated(currentConversation.GetCurrentDialogueText());
-            OnOptionsUpdated(currentConversation.GetAvailableOptions());
-        }
-    }
-}*/
+}

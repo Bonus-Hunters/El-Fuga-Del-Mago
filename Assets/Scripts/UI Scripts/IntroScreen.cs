@@ -23,7 +23,7 @@ public class IntroScreen : MonoBehaviour
         // should load the first scene 
         // make sure the scene is added in the build settings
         // open File → Build Settingss >> add desired scene 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("ox-boss-scene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_1");
 
     }
     public void onExit()
@@ -32,7 +32,8 @@ public class IntroScreen : MonoBehaviour
     }
     public void onContinueGame()
     {
-        Container.SetActive(false);
+        Destroy(Container);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_1");
 
     }
     public void onOptions() { }

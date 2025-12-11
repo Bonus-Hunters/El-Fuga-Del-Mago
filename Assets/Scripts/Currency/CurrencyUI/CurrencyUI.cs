@@ -35,10 +35,6 @@ public class CurrencyUI : MonoBehaviour
 
     private void UpdateUI()
     {
-        foreach (var display in displays)
-        {
-            int amount = playerWallet.GetAmount(display.currencyData);
-            display.uiText.text = $"{display.currencyData.currencyName}: {amount}";
-        }
+
     }
 }

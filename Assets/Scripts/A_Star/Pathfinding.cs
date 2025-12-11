@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Pathfinding : MonoBehaviour
 {
-    public Transform seeker, target;
+    public GameObject seeker, target;
     GridManager grid;
 
     void Awake()
@@ -13,7 +13,9 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-        FindPath(seeker.position, target.position);
+        if (seeker == null || target == null)
+            return;
+        FindPath(seeker.transform.position, target.transform.position);
     }
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {

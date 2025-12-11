@@ -16,4 +16,4 @@ MonoBehaviour:
   description: increases the speed of the player
   icon: {fileID: -1071818920, guid: 10131d11c8987214c8bdf6d295c47353, type: 3}
   maxStack: 1
-  ID: 0
+  ID: 2

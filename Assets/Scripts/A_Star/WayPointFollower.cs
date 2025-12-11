@@ -26,7 +26,6 @@ public class WayPointFollower : MonoBehaviour
             return;
 
         float fixedY = transform.position.y;
-        Debug.Log("Enemy Moving");
         // Get next waypoint
         Vector3 target = wayPoints[currentWayPointIndex].transform.position;
         target.y = fixedY;
@@ -53,9 +52,7 @@ public class WayPointFollower : MonoBehaviour
             if (currentWayPointIndex >= wayPoints.Length)
             {
                 if (loopPath)
-                {
                     currentWayPointIndex = 0;  // restart
-                }
                 else
                 {
                     hasFinishedPath = true;   // stop forever

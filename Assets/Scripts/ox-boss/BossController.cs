@@ -25,7 +25,8 @@ public class BossController : MonoBehaviour, IAttackable
 
     [Header("Player Detection")]
     public float detectionRange = 6f;
-    [SerializeField] float damageAmount = 10f;
+    [SerializeField] float ProjectileDamageAmount = 5f;
+    [SerializeField] float AttackDamageAmount = 10f;
     bool isAttacking = false, isDead = false;
     #endregion
 
@@ -54,6 +55,13 @@ public class BossController : MonoBehaviour, IAttackable
 
     void Update()
     {
+        gameObject.transform.position = new Vector3(
+                 gameObject.transform.position.x,
+                 8.8f,
+                 gameObject.transform.position.z
+             );
+        if (isDead)
+            return;
         playerInRange = movement.isPlayerInAttackZone;
         AnimatorInfo = animator.GetCurrentAnimatorStateInfo(0);
         HandleAnimations();
@@ -75,16 +83,13 @@ public class BossController : MonoBehaviour, IAttackable
         }
         if (!isDead && !movement.isMoving && !isAttacking)
             animator.Play("idle");
-        if (isDead)
-        {
-            deathSound.Play();
-            animator.Play("defy");
-            StartCoroutine(WaitForDeath(Math.Max(deathSound.clip.length, AnimatorInfo.length)));
-        }
+
     }
 
     IEnumerator WaitForDeath(float length)
     {
+        animator.Play("die");
+        deathSound.Play();
         yield return new WaitForSeconds(length);
         DestroySelf();
     }
@@ -115,7 +120,7 @@ public class BossController : MonoBehaviour, IAttackable
 
         Vector3 target = new Vector3(
             transform.position.x + rand.x,
-            transform.position.y,
+            transform.position.y - 20,
             transform.position.z + rand.y
         );
 
@@ -147,8 +152,6 @@ public class BossController : MonoBehaviour, IAttackable
     {
         if (isDead)
             return;
-        Debug.Log("PLayer is still clliding with enemy");
-
         IAttackable gotHit = other.GetComponent<IAttackable>();
 
         timer += Time.deltaTime;
@@ -157,7 +160,7 @@ public class BossController : MonoBehaviour, IAttackable
             // if enemy hit an attackabale object -> [player]
             if (gotHit != null)
             {
-                gotHit.TakeDamage(damageAmount);
+                gotHit.TakeDamage(ProjectileDamageAmount);
                 ProjectileSound.Play();
             }
             timer = 0f;
@@ -172,6 +175,10 @@ public class BossController : MonoBehaviour, IAttackable
         // AttackSound.Play();
         movement.isMoving = false;
         isAttacking = true;
+        IAttackable gotHit = other.GetComponent<IAttackable>();
+        if (gotHit != null)
+            gotHit.TakeDamage(AttackDamageAmount);
+
     }
 
     void OnTriggerExit(Collider other)
@@ -209,12 +216,15 @@ public class BossController : MonoBehaviour, IAttackable
             currentHealth += regenRate * Time.deltaTime;
             currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
+        else
+            currentHealth = maxHealth;
     }
     #endregion
 
     #region Death
     public void TakeDamage(float damage)
     {
+        Debug.Log("OX boss got damaged");
         currentHealth -= damage;
         HandleDeath();
     }
@@ -223,8 +233,11 @@ public class BossController : MonoBehaviour, IAttackable
     {
         if (currentHealth > 0)
             return;
-        currentHealth = 0;
         isDead = true;
+        currentHealth = 0;
+        Debug.Log("Boss is dead");
+        StartCoroutine(WaitForDeath(Math.Max(deathSound.clip.length, AnimatorInfo.length)));
+
     }
 
     public void DestroySelf()

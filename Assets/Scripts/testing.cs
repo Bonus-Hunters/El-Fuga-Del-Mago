@@ -22,8 +22,7 @@ public class testing : MonoBehaviour
         //// Test spending currency
         //Debug.Log("Testing SpendCurrency...");
         //currencyManager.playerWallet.SpendCurrency(goldCurrency, 20);
-        //currencyManager.playerWallet.SpendCurrency(magicShards, 30); // not enough, should fail
-        CurrencyManager.Instance.ShowPopup("+10 Gold", Color.yellow);
+        //currencyManager.playerWallet.SpendCurrency(magicShards, 30); // not enough, should 
 
     }
 
