@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class First_enemy : MonoBehaviour, IInteractable
+public class inventory : MonoBehaviour, IInteractable
 {
     [Header("NPC Settings")]
     public string npcName;
@@ -27,7 +27,7 @@ public class First_enemy : MonoBehaviour, IInteractable
 
     {
         if (isCompleted)
-            return npcName + ": go save you life ";
+            return npcName + ": Have a nice day,mr sherlock ";
         else if (conversation.conversationActive)
             return "";
         else
@@ -51,13 +51,10 @@ public class First_enemy : MonoBehaviour, IInteractable
             }
         }
     }
-    
     void Update()
     {
-        
         if (conversation != null && !isCompleted && conversation.isDone() && !questStart)
             startQuest();
-
         if (!questStart || isCompleted)
             return;
 
@@ -74,7 +71,7 @@ public class First_enemy : MonoBehaviour, IInteractable
         {
             Debug.Log("mission complete");
             isCompleted = true;
-            QuestManager.CompleteQuest("first_enemy");
+            QuestManager.CompleteQuest("inventory");
             foreach (var obj in after_objects)
             {
                 if (obj != null)
@@ -91,10 +88,9 @@ public class First_enemy : MonoBehaviour, IInteractable
             if (conversation != null && !isCompleted)
             {
                 conversation.StartConversation();
-                
-                
+
             }
         }
     }
-    
+
 }
