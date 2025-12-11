@@ -11,7 +11,7 @@ public class SkeletonController : MonoBehaviour, IAttackable
 {
     // Start is called before the first frame update
     bool isMoving = true, isAttacking = false, isDead = false;
-    private float health = 20f;
+    public float health = 20f;
     WayPointFollower wayPoint;
     public Transform player;
     Animator anim;
