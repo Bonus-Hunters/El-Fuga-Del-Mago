@@ -1,32 +1,50 @@
-﻿using Assets.Scripts.Interfaces;
-using Assets.Scripts.Player.Inventory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts
+public class testing : MonoBehaviour
 {
-    internal class testing : MonoBehaviour, IAttackable
+    public CurrencyManager currencyManager;
+    public CurrencyData goldCurrency;
+    public CurrencyData magicShards;
+
+    void Start()
     {
-        public float health = 50f;
+        //if (currencyManager == null)
+        //{
+        //    Debug.LogError("CurrencyManager reference not assigned!");
+        //    return;
+        //}
 
-        public void TakeDamage(float damage)
+        //// Test adding currency
+        //Debug.Log("Testing AddCurrency...");
+        //currencyManager.playerWallet.AddCurrency(goldCurrency, 50);
+        //currencyManager.playerWallet.AddCurrency(magicShards, 25);
+
+        //// Test spending currency
+        //Debug.Log("Testing SpendCurrency...");
+        //currencyManager.playerWallet.SpendCurrency(goldCurrency, 20);
+        //currencyManager.playerWallet.SpendCurrency(magicShards, 30); // not enough, should 
+
+    }
+
+    void Update()
+    {
+        // Optional: Press keys to test dynamically
+        if (Input.GetKeyDown(KeyCode.G))
         {
-            health -= damage;
-            Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {health}");
-
-            if (health <= 0)
-            {
-                Die();
-            }
+            currencyManager.playerWallet.AddCurrency(goldCurrency, 10);
         }
-        private void Die()
+        if (Input.GetKeyDown(KeyCode.H))
         {
-            Debug.Log($"{gameObject.name} has been destroyed!");
-            Destroy(gameObject);
+            currencyManager.playerWallet.SpendCurrency(goldCurrency, 5);
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            currencyManager.playerWallet.AddCurrency(magicShards, 10);
+        }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            currencyManager.playerWallet.SpendCurrency(magicShards, 5);
         }
     }
 }
