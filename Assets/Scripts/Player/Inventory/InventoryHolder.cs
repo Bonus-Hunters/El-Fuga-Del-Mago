@@ -14,6 +14,7 @@ public class InventoryHolder : MonoBehaviour
 
     private void Awake()
     {
-        inventorySystem = new InventorySystem(inventorySize);
+        if(inventorySystem == null)
+            inventorySystem = new InventorySystem(inventorySize);
     }
 }
