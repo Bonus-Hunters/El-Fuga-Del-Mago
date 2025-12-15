@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting.Dependencies.Sqlite;
 public class InventorySlot_UI : MonoBehaviour
 {
     [SerializeField] private Image itemSprite;
@@ -10,7 +9,7 @@ public class InventorySlot_UI : MonoBehaviour
 
     private Button button;
     public InventorySlot AssignedInventorySlot => assignedInventorySlot;
-    public InventoryDisplay ParentDisplay {get; private set;}
+    public InventoryDisplay ParentDisplay { get; private set; }
     private void Awake()
     {
         ClearSlot();
@@ -41,7 +40,7 @@ public class InventorySlot_UI : MonoBehaviour
     }
     public void UpdateUISlot()
     {
-        if(assignedInventorySlot != null) UpdateUISlot(assignedInventorySlot);
+        if (assignedInventorySlot != null) UpdateUISlot(assignedInventorySlot);
     }
     public void ClearSlot()
     {

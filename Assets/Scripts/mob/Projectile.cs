@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Interfaces;
 
 [RequireComponent(typeof(Collider))]
 public class Projectile : MonoBehaviour
@@ -20,7 +21,7 @@ public class Projectile : MonoBehaviour
         col.isTrigger = true; // projectile expects trigger collisions
     }
 
-       public void Init(Vector3 dir, float spd, float dmg, float lifetime)
+    public void Init(Vector3 dir, float spd, float dmg, float lifetime)
     {
         direction = dir.normalized;
         speed = spd;
@@ -67,8 +68,11 @@ public class Projectile : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            var ph = other.GetComponent<PlayerHealth>();
-            if (ph != null) ph.TakeDamage(damage);
+            IAttackable gotHit = other.GetComponent<IAttackable>();
+
+            if (gotHit != null)
+                gotHit.TakeDamage(damage);
+
         }
 
         // Prevent further collisions while being destroyed

@@ -17,7 +17,7 @@ public class ConversationGraph : MonoBehaviour
     private DialogueNode currentNode;
 
     public bool conversationActive = false;
-    
+
 
 
     [Header("UI")]
@@ -144,7 +144,7 @@ public class ConversationGraph : MonoBehaviour
             }
             else
             {
-               // Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
+                // Debug.LogError($"Target node {selectedOption.targetNodeID} not found!");
                 EndConversation();
                 StartCoroutine(HideDialogueAfterDelay(2f));
             }

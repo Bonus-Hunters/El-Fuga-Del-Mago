@@ -7,6 +7,7 @@ public class First_enemy : MonoBehaviour, IInteractable
 {
     [Header("NPC Settings")]
     public string npcName;
+    [SerializeField] private AudioSource InteractionSounds;
 
     [Header("Conversation Reference")]
     public ConversationGraph conversation;
@@ -51,10 +52,10 @@ public class First_enemy : MonoBehaviour, IInteractable
             }
         }
     }
-    
+
     void Update()
     {
-        
+
         if (conversation != null && !isCompleted && conversation.isDone() && !questStart)
             startQuest();
 
@@ -90,11 +91,10 @@ public class First_enemy : MonoBehaviour, IInteractable
         {
             if (conversation != null && !isCompleted)
             {
+                InteractionSounds.Play();
                 conversation.StartConversation();
-                
-                
             }
         }
     }
-    
+
 }

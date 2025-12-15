@@ -3,6 +3,8 @@ using UnityEngine;
 using Assets.Scripts.Interfaces;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
+
 public class BossController : MonoBehaviour, IAttackable
 {
     #region Variables
@@ -91,6 +93,8 @@ public class BossController : MonoBehaviour, IAttackable
         deathSound.Play();
         yield return new WaitForSeconds(length);
         DestroySelf();
+        SceneManager.LoadScene("BossDefeated");
+
     }
     #endregion
 
