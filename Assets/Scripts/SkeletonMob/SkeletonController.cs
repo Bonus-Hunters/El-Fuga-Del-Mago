@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using Assets.Scripts.Interfaces;
-using UnityEditor.UI;
 using UnityEngine;
-using Assets.Scripts;
 
 public class SkeletonController : MonoBehaviour, IAttackable
 {
@@ -28,6 +22,7 @@ public class SkeletonController : MonoBehaviour, IAttackable
         wayPoint = GetComponent<WayPointFollower>();
         wayPoint.loopPath = true;
         anim.Play("Walk");
+        // gameObject.SetActive(false);
     }
 
 
@@ -110,7 +105,7 @@ public class SkeletonController : MonoBehaviour, IAttackable
         {
             isDead = true;
             Destroy(transform.parent.gameObject);
-           // Destroy(gameObject);
+            // Destroy(gameObject);
             anim.SetBool("IsWalking", false);
             anim.SetBool("IsAttacking", false);
             anim.SetBool("IsIdle", false);

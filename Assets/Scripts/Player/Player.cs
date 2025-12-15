@@ -92,7 +92,7 @@ namespace Assets.Scripts.Player
             fill = currentMana / maxMana;
             manaFill.fillAmount = fill;
         }
-        public float GetMana() {  return currentMana; }
+        public float GetMana() { return currentMana; }
         public void SetMana(float mana) { currentMana = mana; }
     }
 }

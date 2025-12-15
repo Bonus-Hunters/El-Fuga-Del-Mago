@@ -23,7 +23,7 @@ public class IntroScreen : MonoBehaviour
         // should load the first scene 
         // make sure the scene is added in the build settings
         // open File → Build Settingss >> add desired scene 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_1");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameStory");
 
     }
     public void onExit()
