@@ -26,7 +26,7 @@ public class ConsumeItems : MonoBehaviour
     }
     void Update()
     {
-        if (Input.inputString.Length > 0)
+        if (Input.inputString.Length > 0 && Player.playerInUI==false)
         {
             char c = Input.inputString[0];
 

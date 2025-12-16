@@ -15,6 +15,8 @@ public class SkeletonController : MonoBehaviour, IAttackable
     [Header("Player Detection")]
     [SerializeField] float detectionRange = 3f;
     [SerializeField] float dist = 1f;
+    [SerializeField] private float attackCooldown = 1.0f; // seconds between attacks
+    private float lastAttackTime = -Mathf.Infinity;
 
     void Start()
     {
@@ -25,16 +27,19 @@ public class SkeletonController : MonoBehaviour, IAttackable
         // gameObject.SetActive(false);
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        Debug.Log("Player Collided with Enemy");
+        if (Time.time - lastAttackTime < attackCooldown)
+            return; // Still in cooldown
 
         IAttackable dmg = other.GetComponent<IAttackable>();
-        // if projet hit an attackabale object -> [player]
         if (dmg != null)
+        {
             dmg.TakeDamage(damageAmount);
+            lastAttackTime = Time.time; // Reset cooldown
+        }
     }
+
 
     bool checkForAttacks()
     {
