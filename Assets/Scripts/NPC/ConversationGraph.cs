@@ -35,6 +35,7 @@ public class ConversationGraph : MonoBehaviour
     void Start()
     {
         InitializeNodeDictionary();
+        dialogueUI = FindObjectOfType<DialogueUI>();
     }
 
     private void InitializeNodeDictionary()

@@ -22,7 +22,8 @@ public class First_enemy : MonoBehaviour, IInteractable
     [Header("object to activate after quest")]
     public List<GameObject> after_objects = new List<GameObject>();
 
-
+    [Header("Defult After Finish Quest")]
+    [SerializeField] string defaultString;
 
     private bool isCompleted = false;
     private bool questStart = false;
@@ -31,7 +32,7 @@ public class First_enemy : MonoBehaviour, IInteractable
 
     {
         if (isCompleted)
-            return npcName + ": go save you life ";
+            return npcName + " : " + defaultString;
         else if (conversation.conversationActive)
             return "";
         else

@@ -106,6 +106,6 @@ public class RangedEnemy : MonoBehaviour, IAttackable
     {
         currentHealth -= damage;
         if (currentHealth <= 0f)
-            Destroy(gameObject);
+            Destroy(transform.parent.gameObject);
     }
 }

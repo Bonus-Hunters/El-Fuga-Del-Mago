@@ -67,6 +67,11 @@ namespace Assets.Scripts.Player
 
             if (Input.GetKeyDown(KeyCode.E))
             {
+                if(gameObject == null)
+                {
+                    Debug.LogError("Interactor GameObject is null.");
+                    return;
+                }
                 currentInteractable.Interact(gameObject);
                 IsInteracting = true;
             }
