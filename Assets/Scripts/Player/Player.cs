@@ -27,6 +27,7 @@ namespace Assets.Scripts.Player
 
         protected override void Update()
         {
+            if (currentHealth <= 0) return;
             base.Update();
             UpdateStatsUI();
             //Debug.Log("player health " + currentHealth);
@@ -77,11 +78,12 @@ namespace Assets.Scripts.Player
         {
             // adjust health reduction and death conditions 
             currentHealth -= damage;
-            Debug.Log("Player Got Hit!");
             if (currentHealth <= 0)
             {
+
                 currentHealth = 0;
-                Debug.Log("Player is Dead");
+                Debug.Log("Player is Dead!!!!");
+                ReloadGameScene.Instance.PlayerDied();
             }
 
         }
