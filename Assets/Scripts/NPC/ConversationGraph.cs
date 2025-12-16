@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Player;
 using UnityEngine;
 
 public class ConversationGraph : MonoBehaviour
@@ -19,11 +20,9 @@ public class ConversationGraph : MonoBehaviour
     public bool conversationActive = false;
 
 
-
     [Header("UI")]
     [SerializeField]
     public DialogueUI dialogueUI; // Reference to your DialogueUI script
-
 
 
     private bool conversationDone;
@@ -66,6 +65,8 @@ public class ConversationGraph : MonoBehaviour
 
         if (nodeDictionary.ContainsKey(startNodeID))
         {
+            FindObjectOfType<LookAtNPC>().LookAt(transform);
+            Player.playerInUI = true;
             conversationActive = true;
             conversationDone = false;
             currentNode = nodeDictionary[startNodeID];
@@ -154,6 +155,8 @@ public class ConversationGraph : MonoBehaviour
     private void EndConversation()
     {
         conversationActive = false;
+        Player.playerInUI = false;
+
         //currentNode = null;
         Debug.Log("Conversation ended.");
     }

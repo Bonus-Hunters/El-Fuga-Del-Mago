@@ -7,6 +7,7 @@ public class inventory : MonoBehaviour, IInteractable
 {
     [Header("NPC Settings")]
     public string npcName;
+    [SerializeField] private AudioSource InteractionSounds;
 
     [Header("Conversation Reference")]
     public ConversationGraph conversation;
@@ -87,8 +88,8 @@ public class inventory : MonoBehaviour, IInteractable
         {
             if (conversation != null && !isCompleted)
             {
+                InteractionSounds.Play();
                 conversation.StartConversation();
-
             }
         }
     }

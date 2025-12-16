@@ -1,4 +1,5 @@
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class First_enemy : MonoBehaviour, IInteractable
 
     [Header("object to activate after quest")]
     public List<GameObject> after_objects = new List<GameObject>();
+
+
 
     private bool isCompleted = false;
     private bool questStart = false;
