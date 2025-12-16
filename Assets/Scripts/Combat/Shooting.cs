@@ -23,7 +23,7 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(1) && Time.time >= timeToFire && player.GetMana()>=10f)//right click
+        if (Input.GetMouseButton(1) && Time.time >= timeToFire && player.GetMana()>=10f && Player.playerInUI==false)//right click
         {
             player.SetMana(player.GetMana() - 10f);
             timeToFire = Time.time + 1 /fireRate;
