@@ -152,18 +152,22 @@ namespace Assets.Scripts.Abstract
                 audioSource.Play();
             }
         }
-        public void RestoreHealth(float amount)
+        public bool RestoreHealth(float amount)
         {
+            if (currentHealth == maxHealth) return false;
             currentHealth += amount;
             if (currentHealth > maxHealth)
                 currentHealth = maxHealth;
+            return true;
         }
 
-        public void RestoreMana(float amount)
+        public bool RestoreMana(float amount)
         {
+            if(currentMana == maxMana) return false;   
             currentMana += amount;
             if (currentMana > maxMana)
                 currentMana = maxMana;
+            return true;
         }
 
 

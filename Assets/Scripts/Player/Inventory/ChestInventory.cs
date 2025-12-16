@@ -13,6 +13,8 @@ public class ChestInventory : InventoryHolder, IInteractable
 
     public string InterationPrompt()
     {
-        return "Press E to open Chest";
+        if (Player.playerInUI == false)
+            return "Press E to open Chest";
+        else return "Press R to close Chest";
     }
 }
