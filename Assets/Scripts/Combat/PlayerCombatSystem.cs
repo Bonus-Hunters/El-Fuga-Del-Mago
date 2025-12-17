@@ -25,7 +25,7 @@ namespace Assets.Scripts.Combat
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0) && equippedWeapon != null)
+            if (Input.GetMouseButtonDown(0) && equippedWeapon != null && Player.Player.playerInUI==false)
             {
                 //Debug.Log("Player attacking with " + equippedWeapon.name);
                 equippedWeapon.Attack();

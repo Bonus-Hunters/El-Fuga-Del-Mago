@@ -31,7 +31,7 @@ public class InventoryUIController : MonoBehaviour
     void Update()
     {
         if (inventoryPanel.gameObject.activeInHierarchy &&
-            Keyboard.current.qKey.wasPressedThisFrame)
+            Keyboard.current.rKey.wasPressedThisFrame)
         {
             inventoryPanel.gameObject.SetActive(false);
             Player.playerInUI = false;

@@ -6,7 +6,7 @@ public class RangedEnemy : MonoBehaviour, IAttackable
     [Header("References")]
     public Transform firePoint;
     public GameObject projectilePrefab;
-    public Animator animator;                // drag Animator here in Inspector
+    public Animator animator;
 
     [Header("Shooting")]
     public float range = 15f;
@@ -27,14 +27,11 @@ public class RangedEnemy : MonoBehaviour, IAttackable
     float cooldown = 0f;
     GameObject lastProjectile;
 
-    // NEW: track last position to compute speed
-    Vector3 lastPosition;
     public EnemyMovement movement;
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (firePoint == null) firePoint = transform;
-
 
     }
 
@@ -45,13 +42,6 @@ public class RangedEnemy : MonoBehaviour, IAttackable
         if (player == null) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
-
-        // face player horizontally
-        // Vector3 look = player.position - transform.position;
-        // look.y = 0;
-        // if (look.sqrMagnitude > 0.001f)
-        //     transform.rotation = Quaternion.LookRotation(look);
-
         // shooting
         if (movement.ChasingMove && dist <= range)
         {
@@ -116,6 +106,6 @@ public class RangedEnemy : MonoBehaviour, IAttackable
     {
         currentHealth -= damage;
         if (currentHealth <= 0f)
-            Destroy(gameObject);
+            Destroy(transform.parent.gameObject);
     }
 }

@@ -26,15 +26,15 @@ public class ConsumeItems : MonoBehaviour
     }
     void Update()
     {
-        if (Input.inputString.Length > 0)
+        if (Input.inputString.Length > 0 && Player.playerInUI==false)
         {
             char c = Input.inputString[0];
 
-            // Check if it's a number 1–9
+            // Check if it's a number 1–5
             if (char.IsDigit(c))
             {
                 int ind = c - '0';
-                if (ind >= 1 && ind <= 9)
+                if (ind >= 1 && ind <= 5)
                 {
                     ind--;
                     if (inventorySystem.InventorySlots[ind] != null)
@@ -47,20 +47,26 @@ public class ConsumeItems : MonoBehaviour
                         {
                             case 0:
                                 Debug.Log("Consuming Health Potion.");
-                                player.RestoreHealth(healAmount);
-                                slot.RemoveFromStack(1);
-                                inventorySystem.onInventorySlotChanged?.Invoke(slot);
-                                return;
+                                bool didHeal = player.RestoreHealth(healAmount);
+                                if (didHeal)
+                                {
+                                    slot.RemoveFromStack(1);
+
+                                    inventorySystem.onInventorySlotChanged?.Invoke(slot);
+                                }
+                                break;
                             case 1:
                                 Debug.Log("Consuming Mana Potion.");
-                                player.RestoreMana(manaAmount);
-                                slot.RemoveFromStack(1);
-                                inventorySystem.onInventorySlotChanged?.Invoke(slot);
-
-                                return;
+                                bool didRecharge = player.RestoreMana(manaAmount);
+                                if (didRecharge)
+                                {
+                                    slot.RemoveFromStack(1);
+                                    inventorySystem.onInventorySlotChanged?.Invoke(slot);                                    
+                                }
+                                break;
                             case 2:
                                 Debug.Log("Consuming Speed Potion.");
-                                return;
+                                break;
                         }
                     }
                     Debug.Log("Pressed number: " + ind);

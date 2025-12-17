@@ -73,10 +73,6 @@ public class FireProjectile : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // 2) ENVIRONMENT OR ANYTHING ELSE
-        // if projectile hit anothe enemy or enviroment component nothing happen -> destroy obj
-        Debug.Log("Projectile hit: " + other.name);
         Destroy(gameObject);
     }
 }
